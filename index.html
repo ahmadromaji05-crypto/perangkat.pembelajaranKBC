@@ -3,515 +3,1412 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Penyusun Perangkat Pembelajaran</title>
+  <title>Sistem Otomasi Perangkat Pembelajaran Terpadu</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts: Plus Jakarta Sans & Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Times+New+Roman&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; color: #1e293b; padding-bottom: 40px; }
-    
-    header { background: #1e3a8a; color: white; padding: 20px 30px; border-bottom: 4px solid #0d9488; }
-    header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-    header p { font-size: 0.88rem; opacity: 0.85; }
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #0d9488;
+      --accent-color: #f59e0b;
+      --bg-slate: #f1f5f9;
+      --paper-border: #cbd5e1;
+    }
 
-    .main-container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px 30px; max-width: 1600px; margin: 0 auto; }
-    .col-form { flex: 1 1 420px; max-width: 480px; }
-    .col-doc { flex: 2 1 650px; min-width: 320px; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-slate);
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-col: column;
+    }
 
-    .panel { background: white; border-radius: 8px; border: 1px solid #cbd5e1; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .panel h2 { font-size: 1.05rem; font-weight: 700; color: #1e3a8a; margin-bottom: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    /* Header Nav */
+    .app-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #172554 100%);
+      color: white;
+      padding: 1.25rem 2rem;
+      border-bottom: 4px solid var(--secondary-color);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
 
-    .form-group { margin-bottom: 12px; }
-    .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
-    .form-row .form-group { flex: 1; margin-bottom: 0; }
-    
-    label { display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 4px; }
-    input[type="text"], select, textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.88rem; color: #0f172a; outline: none; background: #fff; }
-    input[type="text"]:focus, select:focus, textarea:focus { border-color: #2563eb; ring: 2px #93c5fd; }
-    textarea { resize: vertical; }
+    .badge-status {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
 
-    .highlight-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 12px; margin-bottom: 14px; }
-    .highlight-box label { color: #166534; font-weight: 700; }
-    .help-text { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+    /* Container Panels */
+    .panel-box {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 1.3rem;
+      margin-bottom: 1.25rem;
+    }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 14px; font-size: 0.88rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: 1px solid transparent; transition: background 0.15s; text-decoration: none; }
-    .btn-primary { background: #2563eb; color: white; width: 100%; padding: 12px; font-size: 1rem; border: none; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-success { background: #059669; color: white; }
-    .btn-success:hover { background: #047857; }
-    .btn-dark { background: #334155; color: white; }
-    .btn-dark:hover { background: #1e293b; }
-    .btn-outline { background: white; border: 1px solid #cbd5e1; color: #334155; }
-    .btn-outline:hover { background: #f8fafc; }
-    .btn-sm { padding: 4px 8px; font-size: 0.78rem; }
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.65rem;
+      margin-bottom: 1rem;
+    }
 
-    /* Navigasi Tab */
-    .tab-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; align-items: center; justify-content: space-between; }
-    .tab-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
-    .tab-btn { background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 11px; font-size: 0.82rem; font-weight: 600; border-radius: 5px; cursor: pointer; color: #475569; }
-    .tab-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
-    .action-buttons { display: flex; gap: 6px; }
+    /* Mode Switcher Buttons */
+    .mode-tab-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      background: #f8fafc;
+      padding: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 1rem;
+    }
 
-    /* Lembar Kerja Dokumen */
-    .doc-paper { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 40px; min-height: 800px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
-    .doc-paper.editing { outline: 2px dashed #0d9488; background: #fffffb; }
-    
-    .doc-title { text-align: center; font-size: 1.15rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
-    .doc-subtitle { text-align: center; font-size: 0.95rem; font-weight: 600; margin-bottom: 22px; color: #334155; }
-    
-    .doc-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
-    .doc-table th, .doc-table td { border: 1px solid #334155; padding: 8px 10px; text-align: left; vertical-align: top; }
-    .doc-table th { background-color: #f1f5f9; text-align: center; font-weight: 700; }
-    
-    .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 0.9rem; }
-    .meta-table td { padding: 4px 6px; vertical-align: top; }
-    
-    .section-head { font-size: 0.98rem; font-weight: 700; color: #1e3a8a; margin: 20px 0 8px 0; }
-    .ttd-box { width: 100%; margin-top: 35px; border-collapse: collapse; text-align: center; font-size: 0.9rem; }
-    .ttd-box td { width: 50%; vertical-align: top; }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 8px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+    }
 
+    .mode-btn.active-mode {
+      background: #ffffff;
+      color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .mode-btn.active-mode.gemini {
+      color: #4f46e5;
+    }
+
+    /* Form Inputs */
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 0.25rem;
+    }
+
+    .form-control, .form-select {
+      font-size: 0.84rem;
+      border-radius: 8px;
+      border-color: #cbd5e1;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .kustom-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+
+    /* Document Sheet (A4 Simulation) */
+    .doc-preview-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--paper-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 3.5rem 3.5rem;
+      min-height: 900px;
+      position: relative;
+      font-family: 'Times New Roman', serif;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    .doc-preview-wrapper.is-editing {
+      outline: 3px dashed #0d9488;
+      background-color: #fffffb;
+    }
+
+    .doc-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-subtitle {
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      color: #334155;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .meta-table td {
+      padding: 3px 6px;
+      vertical-align: top;
+      border: none !important;
+    }
+
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.1rem 0;
+      font-size: 0.92rem;
+    }
+
+    .doc-table th, .doc-table td {
+      border: 1px solid #1e293b;
+      padding: 7px 10px;
+      vertical-align: top;
+    }
+
+    .doc-table th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .section-header {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-top: 1.3rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .ttd-table {
+      width: 100%;
+      margin-top: 2.8rem;
+      text-align: center;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .ttd-table td {
+      width: 50%;
+      vertical-align: top;
+      border: none !important;
+    }
+
+    /* Tab Nav Pills */
+    .doc-nav-tab .btn {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.45rem 0.8rem;
+      border-radius: 8px;
+    }
+
+    .doc-nav-tab .btn.active {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+      border-color: var(--primary-color) !important;
+    }
+
+    /* Print Setup */
     @media print {
-      body { background: white; padding: 0; }
-      header, .col-form, .tab-bar, .no-print { display: none !important; }
-      .main-container { padding: 0; margin: 0; display: block; }
-      .col-doc { width: 100%; max-width: 100%; }
-      .doc-paper { border: none; box-shadow: none; padding: 0; }
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .no-print, .app-header, .panel-box, .doc-nav-tab, #editAlertBanner {
+        display: none !important;
+      }
+      .col-lg-5, .col-xl-4 {
+        display: none !important;
+      }
+      .col-lg-7, .col-xl-8 {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .doc-preview-wrapper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: auto !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header class="no-print">
-    <h1>Sistem Otomasi Perangkat Pembelajaran Terpadu</h1>
-    <p>Generator Lengkap Modul Ajar, Bahan Ajar Mandiri, LKPD, CP, TP, ATP, Prota & Promes (Kurikulum Merdeka)</p>
+  <!-- Top App Navigation -->
+  <header class="app-header no-print">
+    <div class="container-fluid px-lg-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-white bg-opacity-10 p-2 rounded-3 border border-white border-opacity-25 text-warning fs-4">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1 class="h5 fw-bold mb-0 text-white">Sistem Otomasi Perangkat Pembelajaran</h1>
+          <p class="small mb-0 text-white-50">Generator Resmi CP, TP, ATP, Prota, Promes, Modul Ajar, Bahan Ajar & LKPD (Kurikulum Merdeka)</p>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span id="activeModeBadge" class="badge-status bg-warning text-dark">
+          <i class="fa-solid fa-bolt me-1"></i> Mode Cepat (Offline)
+        </span>
+        <button type="button" class="btn btn-sm btn-outline-light" onclick="isiContohData()">
+          <i class="fa-solid fa-wand-magic-sparkles me-1 text-warning"></i> Isi Contoh Cepat
+        </button>
+      </div>
+    </div>
   </header>
 
-  <div class="main-container">
-    
-    <!-- Kolom Formulir Input -->
-    <div class="col-form no-print">
-      <div class="panel">
-        <h2>
-          <span>Parameter Pembelajaran</span>
-          <button type="button" class="btn btn-outline btn-sm" onclick="isiContoh()">Isi Contoh</button>
-        </h2>
-
-        <div class="form-group">
-          <label>Nama Sekolah / Madrasah</label>
-          <input type="text" id="sekolah" value="SMP Negeri 1 Merdeka Belajar">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nama Guru</label>
-            <input type="text" id="guru" value="Naning Maryana, M.Pd.">
-          </div>
-          <div class="form-group">
-            <label>NIP Guru</label>
-            <input type="text" id="nipGuru" value="197503141999032001">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nama Kepala Sekolah</label>
-            <input type="text" id="kepsek" value="Dra. Hj. Siti Aminah, M.Pd.">
-          </div>
-          <div class="form-group">
-            <label>NIP Kepala Sekolah</label>
-            <input type="text" id="nipKepsek" value="197001011995012001">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Mata Pelajaran</label>
-            <input type="text" id="mapel" value="Pendidikan Pancasila (PP)">
-          </div>
-          <div class="form-group">
-            <label>Fase & Kelas</label>
-            <select id="fase">
-              <option value="Fase A (Kelas 1-2 SD/MI)">Fase A (Kelas 1-2 SD/MI)</option>
-              <option value="Fase B (Kelas 3-4 SD/MI)">Fase B (Kelas 3-4 SD/MI)</option>
-              <option value="Fase C (Kelas 5-6 SD/MI)">Fase C (Kelas 5-6 SD/MI)</option>
-              <option value="Fase D (Kelas 7-9 SMP/MTs)" selected>Fase D (Kelas 7-9 SMP/MTs)</option>
-              <option value="Fase E (Kelas 10 SMA/MA/SMK)">Fase E (Kelas 10 SMA/MA/SMK)</option>
-              <option value="Fase F (Kelas 11-12 SMA/MA/SMK)">Fase F (Kelas 11-12 SMA/MA/SMK)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Semester</label>
-            <select id="semester">
-              <option value="Ganjil (1)" selected>Ganjil (1)</option>
-              <option value="Genap (2)">Genap (2)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tahun Ajaran</label>
-            <input type="text" id="tahun" value="2026/2027">
-          </div>
-          <div class="form-group">
-            <label>Alokasi Waktu</label>
-            <input type="text" id="waktu" value="3 JP x 40 Menit">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Materi Pokok / Judul Topik</label>
-          <input type="text" id="topik" value="Sejarah Kelahiran Pancasila dan Nilai Keseharian">
-        </div>
-
-        <!-- Input Materi Kustom Guru -->
-        <div class="highlight-box">
-          <label>Input Materi Sendiri (Bahan Ajar & LKPD)</label>
-          <textarea id="materiKustom" rows="4" placeholder="Tempel ringkasan bacaan buku, poin materi penting, atau kasus spesifik di sini..."></textarea>
-          <div class="help-text">*Kosongkan jika ingin materi disusunkan otomatis.</div>
-        </div>
-
-        <div class="form-group">
-          <label>Model Pembelajaran</label>
-          <select id="model">
-            <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
-            <option value="Project Based Learning (PjBL)" selected>Project Based Learning (PjBL)</option>
-            <option value="Discovery / Inquiry Learning">Discovery / Inquiry Learning</option>
-            <option value="Pembelajaran Terdiferensiasi">Pembelajaran Terdiferensiasi</option>
-          </select>
-        </div>
-
-        <div style="margin-top: 18px;">
-          <!-- Tombol bertipe 'button' murni tanpa form agar tidak memicu reload -->
-          <button type="button" class="btn btn-primary" onclick="buatSemuaDokumen()">
-            ⚙️ Susun Seluruh Perangkat
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Kolom Lembar Dokumen & Hasil -->
-    <div class="col-doc">
+  <div class="container-fluid px-lg-4 my-4 flex-grow-1">
+    <div class="row g-4">
       
-      <!-- Navigasi Tab & Aksi -->
-      <div class="tab-bar no-print">
-        <div class="tab-buttons" id="tabGroup">
-          <button type="button" class="tab-btn active" onclick="pindahTab('modul')">Modul Ajar</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('bahan')">Bahan Ajar</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('lkpd')">LKPD</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('cp')">CP</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('tp')">TP</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('atp')">ATP</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('prota')">Prota</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('promes')">Promes</button>
-          <button type="button" class="tab-btn" onclick="pindahTab('semua')">📦 Paket Lengkap</button>
+      <!-- Left Column: Settings and Input Forms -->
+      <div class="col-xl-4 col-lg-5 no-print">
+        
+        <!-- Mode Switcher Panel -->
+        <div class="panel-box">
+          <div class="panel-title">
+            <span><i class="fa-solid fa-sliders me-2 text-primary"></i>Pilihan Generator</span>
+            <span class="small text-muted fw-normal">Dua Mode Kerja</span>
+          </div>
+
+          <div class="mode-tab-container">
+            <button type="button" id="btnModeStandar" class="mode-btn active-mode" onclick="gantiMode('standar')">
+              <i class="fa-solid fa-bolt text-warning"></i> Mode Cepat (Offline)
+            </button>
+            <button type="button" id="btnModeGemini" class="mode-btn gemini" onclick="gantiMode('gemini')">
+              <i class="fa-solid fa-brain text-indigo"></i> Mode AI Gemini
+            </button>
+          </div>
+
+          <!-- Gemini Configuration Card (Expands when Gemini Mode is active) -->
+          <div id="geminiConfigCard" class="d-none border rounded-3 p-3 bg-light border-primary-subtle mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small fw-bold text-primary"><i class="fa-solid fa-key me-1"></i>Kunci Google Gemini API</span>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="small text-decoration-none">
+                Ambil Kunci Gratis <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+
+            <div class="input-group input-group-sm mb-2">
+              <input type="password" id="geminiApiKey" class="form-control" placeholder="Tempelkan API Key (AIzaSy...)">
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleApiMask()">
+                <i id="eyeIcon" class="fa-solid fa-eye"></i>
+              </button>
+              <button class="btn btn-primary" type="button" onclick="tesKoneksiGemini()">
+                <i class="fa-solid fa-plug me-1"></i>Tes
+              </button>
+            </div>
+            <div id="apiFeedbackMsg" class="small mb-2" style="font-size:0.75rem;"></div>
+
+            <div class="row g-2">
+              <div class="col-7">
+                <label class="form-label" style="font-size:0.72rem;">Model Gemini</label>
+                <select id="geminiModel" class="form-select form-select-sm">
+                  <option value="gemini-3.8-flash" selected>gemini-3.8-flash (Rekomendasi Cepat)</option>
+                  <option value="gemini-3.8-pro">gemini-3.8-pro (Analisis Mendalam)</option>
+                  <option value="gemini-2.5-flash">gemini-2.5-flash (Alternatif)</option>
+                </select>
+              </div>
+              <div class="col-5">
+                <label class="form-label" style="font-size:0.72rem;">Kreativitas</label>
+                <select id="geminiTemp" class="form-select form-select-sm">
+                  <option value="0.3" selected>Terstruktur</option>
+                  <option value="0.7">Kreatif</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="small text-muted" style="font-size: 0.75rem;">
+            * <strong>Mode Cepat:</strong> 100% instan tanpa koneksi API.<br>
+            * <strong>Mode Gemini:</strong> Menggunakan LLM Google untuk nalar mendalam & LKPD kontekstual.
+          </div>
         </div>
-        <div class="action-buttons">
-          <button type="button" class="btn btn-outline btn-sm" id="btnEdit" onclick="ubahModeEdit()">✏️ Edit Teks</button>
-          <button type="button" class="btn btn-success btn-sm" onclick="unduhWord()">💾 Unduh .doc</button>
-          <button type="button" class="btn btn-dark btn-sm" onclick="window.print()">🖨️ Cetak / PDF</button>
+
+        <!-- Form Parameters Panel -->
+        <div class="panel-box">
+          <div class="panel-title">
+            <span><i class="fa-solid fa-file-pen me-2 text-primary"></i>Parameter Administrasi</span>
+          </div>
+
+          <!-- Non-form container to prevent accidental enter reload -->
+          <div id="paramInputContainer">
+            <div class="mb-2">
+              <label class="form-label">Nama Satuan Pendidikan / Madrasah</label>
+              <input type="text" id="sekolah" class="form-control" value="SMP Negeri 1 Merdeka Belajar">
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-7">
+                <label class="form-label">Nama Guru Pengampu</label>
+                <input type="text" id="guru" class="form-control" value="Naning Maryana, M.Pd.">
+              </div>
+              <div class="col-5">
+                <label class="form-label">NIP Guru</label>
+                <input type="text" id="nipGuru" class="form-control" value="197503141999032001">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-7">
+                <label class="form-label">Nama Kepala Sekolah</label>
+                <input type="text" id="kepsek" class="form-control" value="Dra. Hj. Siti Aminah, M.Pd.">
+              </div>
+              <div class="col-5">
+                <label class="form-label">NIP Kepala Sekolah</label>
+                <input type="text" id="nipKepsek" class="form-control" value="197001011995012001">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label">Mata Pelajaran</label>
+                <input type="text" id="mapel" class="form-control" value="Pendidikan Pancasila (PP)">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Fase & Kelas</label>
+                <select id="fase" class="form-select">
+                  <option value="Fase A (Kelas 1-2 SD/MI)">Fase A (Kelas 1-2 SD/MI)</option>
+                  <option value="Fase B (Kelas 3-4 SD/MI)">Fase B (Kelas 3-4 SD/MI)</option>
+                  <option value="Fase C (Kelas 5-6 SD/MI)">Fase C (Kelas 5-6 SD/MI)</option>
+                  <option value="Fase D (Kelas 7-9 SMP/MTs)" selected>Fase D (Kelas 7-9 SMP/MTs)</option>
+                  <option value="Fase E (Kelas 10 SMA/MA/SMK)">Fase E (Kelas 10 SMA/MA/SMK)</option>
+                  <option value="Fase F (Kelas 11-12 SMA/MA/SMK)">Fase F (Kelas 11-12 SMA/MA/SMK)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-4">
+                <label class="form-label">Semester</label>
+                <select id="semester" class="form-select">
+                  <option value="Ganjil (1)" selected>Ganjil (1)</option>
+                  <option value="Genap (2)">Genap (2)</option>
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label">Tahun Pelajaran</label>
+                <input type="text" id="tahun" class="form-control" value="2026/2027">
+              </div>
+              <div class="col-4">
+                <label class="form-label">Alokasi Waktu</label>
+                <input type="text" id="waktu" class="form-control" value="3 JP x 40 Menit">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label">Materi Pokok / Judul Topik</label>
+              <input type="text" id="topik" class="form-control" value="Sejarah Kelahiran Pancasila dan Nilai Keseharian">
+            </div>
+
+            <!-- Custom Topic Content Enrichment -->
+            <div class="kustom-box mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="form-label text-success mb-0">
+                  <i class="fa-solid fa-book-bookmark me-1"></i>Input Teks Materi Guru (Opsional)
+                </label>
+                <span class="badge bg-success-subtle text-success" style="font-size:0.68rem;">Prioritas Bahan & LKPD</span>
+              </div>
+              <textarea id="materiKustom" class="form-control" rows="3" placeholder="Tempelkan ringkasan modul buku pegangan atau pokok materi di sini..."></textarea>
+              <div class="text-muted" style="font-size: 0.72rem; margin-top: 3px;">
+                *Jika diisi, Bahan Ajar & LKPD akan membedah teks materi Anda secara khusus.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Model Pembelajaran</label>
+              <select id="model" class="form-select">
+                <option value="Project Based Learning (PjBL)" selected>Project Based Learning (PjBL)</option>
+                <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+                <option value="Discovery / Inquiry Learning">Discovery / Inquiry Learning</option>
+                <option value="Pembelajaran Terdiferensiasi">Pembelajaran Terdiferensiasi</option>
+              </select>
+            </div>
+
+            <!-- Generate Action Button -->
+            <button type="button" id="btnGenerate" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" onclick="prosesPenyusunan()">
+              <i class="fa-solid fa-gears me-2"></i>Susun Seluruh Perangkat
+            </button>
+          </div>
         </div>
+
       </div>
 
-      <!-- Area Tampilan Kertas Dokumen -->
-      <div class="doc-paper" id="paperTarget" contenteditable="false">
-        <!-- Dokumen terisi secara otomatis -->
+      <!-- Right Column: Document Workspace & Live Preview -->
+      <div class="col-xl-8 col-lg-7">
+        
+        <!-- Tab Bar & Document Control Actions -->
+        <div class="panel-box p-2 mb-3 no-print">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            
+            <!-- Navigation Tabs -->
+            <div class="doc-nav-tab d-flex flex-wrap gap-1" id="tabPills">
+              <button type="button" class="btn btn-outline-secondary active" onclick="pindahTab('modul')">Modul Ajar</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('bahan')">Bahan Ajar</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('lkpd')">LKPD</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('cp')">CP</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('tp')">TP</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('atp')">ATP</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('prota')">Prota</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="pindahTab('promes')">Promes</button>
+              <button type="button" class="btn btn-outline-secondary text-primary fw-bold" onclick="pindahTab('semua')">
+                <i class="fa-solid fa-layer-group me-1"></i>Paket Lengkap
+              </button>
+            </div>
+
+            <!-- Export and Edit Actions -->
+            <div class="d-flex align-items-center gap-1.5">
+              <button type="button" id="btnToggleEdit" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="toggleEditTeks()">
+                <i class="fa-solid fa-pen-to-square me-1"></i><span id="editBtnText">Edit Teks</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" onclick="salinKonten()">
+                <i class="fa-regular fa-copy me-1"></i>Salin
+              </button>
+              <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="eksporKeWord()">
+                <i class="fa-solid fa-file-word me-1"></i>Unduh .doc
+              </button>
+              <button type="button" class="btn btn-sm btn-dark fw-semibold" onclick="window.print()">
+                <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Editable Mode Banner -->
+        <div id="editAlertBanner" class="alert alert-warning py-2 px-3 small d-none no-print d-flex align-items-center justify-content-between">
+          <div>
+            <i class="fa-solid fa-circle-info me-2 text-warning-emphasis"></i>
+            <strong>Mode Edit Interaktif Aktif:</strong> Anda dapat langsung mengklik teks di bawah untuk menambah poin, soal, atau mengubah tabel. Klik <strong>"Selesai Edit"</strong> setelah selesai.
+          </div>
+          <button type="button" class="btn btn-sm btn-dark py-0" onclick="toggleEditTeks()">Selesai Edit</button>
+        </div>
+
+        <!-- Printable Paper Workspace -->
+        <div class="doc-preview-wrapper" id="paperTarget" contenteditable="false">
+          <!-- Documents automatically render here on load -->
+        </div>
+
       </div>
 
     </div>
-
   </div>
 
-  <script>
-    // Penampung Berkas
-    var berkas = {};
-    var tabAktif = 'modul';
-    var sedangEdit = false;
+  <!-- Bootstrap JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    // Baca Nilai Form
-    function ambilNilai() {
-      function v(id) {
-        var el = document.getElementById(id);
-        return el ? el.value.trim() : '';
+  <script>
+    // Global Application State
+    let modeAktif = 'standar'; // 'standar' | 'gemini'
+    let tabTerpilih = 'modul';
+    let statusEdit = false;
+    let daftarDokumen = {};
+
+    // Initialization on Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      // Restore cached API Key if exists
+      const savedKey = localStorage.getItem('gemini_api_key_perangkat') || '';
+      if (savedKey) {
+        const inputKey = document.getElementById('geminiApiKey');
+        if (inputKey) inputKey.value = savedKey;
       }
+
+      // Initial automatic generation: Immediate display on screen
+      prosesPenyusunan();
+    });
+
+    // Switch Generator Mode
+    function gantiMode(mode) {
+      modeAktif = mode;
+      const btnStandar = document.getElementById('btnModeStandar');
+      const btnGemini = document.getElementById('btnModeGemini');
+      const geminiCard = document.getElementById('geminiConfigCard');
+      const badge = document.getElementById('activeModeBadge');
+
+      if (mode === 'gemini') {
+        btnGemini.classList.add('active-mode');
+        btnStandar.classList.remove('active-mode');
+        geminiCard.classList.remove('d-none');
+        badge.className = 'badge-status bg-primary text-white';
+        badge.innerHTML = '<i class="fa-solid fa-brain me-1"></i> Mode AI Gemini Aktif';
+      } else {
+        btnStandar.classList.add('active-mode');
+        btnGemini.classList.remove('active-mode');
+        geminiCard.classList.add('d-none');
+        badge.className = 'badge-status bg-warning text-dark';
+        badge.innerHTML = '<i class="fa-solid fa-bolt me-1"></i> Mode Cepat (Offline)';
+      }
+    }
+
+    // Toggle API Key Mask
+    function toggleApiMask() {
+      const input = document.getElementById('geminiApiKey');
+      const icon = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    // Test Gemini API Connectivity
+    async function tesKoneksiGemini() {
+      const apiKey = document.getElementById('geminiApiKey').value.trim();
+      const model = document.getElementById('geminiModel').value;
+      const feedback = document.getElementById('apiFeedbackMsg');
+
+      if (!apiKey) {
+        feedback.innerHTML = '<span class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-1"></i>Masukkan API Key terlebih dahulu.</span>';
+        return;
+      }
+
+      feedback.innerHTML = '<span class="text-muted"><i class="fa-solid fa-spinner fa-spin me-1"></i>Menghubungkan ke Google Gemini API...</span>';
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "Tes koneksi. Jawab hanya satu kata: Aktif." }] }]
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem('gemini_api_key_perangkat', apiKey);
+          feedback.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-circle-check me-1"></i>Model <b>${model}</b> berhasil tersambung!</span>`;
+        } else {
+          feedback.innerHTML = `<span class="text-danger"><i class="fa-solid fa-circle-xmark me-1"></i>Gagal: ${data.error?.message || 'Kunci tidak valid.'}</span>`;
+        }
+      } catch (err) {
+        feedback.innerHTML = `<span class="text-danger"><i class="fa-solid fa-triangle-exclamation me-1"></i>Gagal menghubungi server: ${err.message}</span>`;
+      }
+    }
+
+    // Get Form Data Values
+    function getFormData() {
+      const val = (id) => (document.getElementById(id)?.value || '').trim();
       return {
-        sekolah: v('sekolah') || 'Satuan Pendidikan',
-        guru: v('guru') || 'Guru Pengampu, S.Pd.',
-        nipGuru: v('nipGuru') || '-',
-        kepsek: v('kepsek') || 'Kepala Sekolah, M.Pd.',
-        nipKepsek: v('nipKepsek') || '-',
-        mapel: v('mapel') || 'Mata Pelajaran',
-        fase: v('fase') || 'Fase D (Kelas 7-9 SMP/MTs)',
-        semester: v('semester') || 'Ganjil (1)',
-        tahun: v('tahun') || '2026/2027',
-        waktu: v('waktu') || '3 JP x 40 Menit',
-        topik: v('topik') || 'Materi Pokok Pembelajaran',
-        materi: v('materiKustom'),
-        model: v('model') || 'Problem Based Learning (PBL)'
+        sekolah: val('sekolah') || 'SMP Negeri 1 Merdeka Belajar',
+        guru: val('guru') || 'Naning Maryana, M.Pd.',
+        nipGuru: val('nipGuru') || '197503141999032001',
+        kepsek: val('kepsek') || 'Dra. Hj. Siti Aminah, M.Pd.',
+        nipKepsek: val('nipKepsek') || '197001011995012001',
+        mapel: val('mapel') || 'Pendidikan Pancasila (PP)',
+        fase: val('fase') || 'Fase D (Kelas 7-9 SMP/MTs)',
+        semester: val('semester') || 'Ganjil (1)',
+        tahun: val('tahun') || '2026/2027',
+        waktu: val('waktu') || '3 JP x 40 Menit',
+        topik: val('topik') || 'Sejarah Kelahiran Pancasila dan Nilai Keseharian',
+        materiKustom: val('materiKustom'),
+        model: val('model') || 'Project Based Learning (PjBL)'
       };
     }
 
-    function kopTabel(d) {
-      return '<table class="meta-table">' +
-        '<tr><td width="20%"><strong>Satuan Pendidikan</strong></td><td width="35%">: ' + d.sekolah + '</td><td width="18%"><strong>Fase / Kelas</strong></td><td width="27%">: ' + d.fase + '</td></tr>' +
-        '<tr><td><strong>Mata Pelajaran</strong></td><td>: ' + d.mapel + '</td><td><strong>Semester / Tahun</strong></td><td>: ' + d.semester + ' / ' + d.tahun + '</td></tr>' +
-        '<tr><td><strong>Materi Pokok</strong></td><td>: <strong>' + d.topik + '</strong></td><td><strong>Alokasi Waktu</strong></td><td>: ' + d.waktu + '</td></tr>' +
-      '</table>';
+    // Main Engine Runner
+    async function prosesPenyusunan() {
+      const btn = document.getElementById('btnGenerate');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Menyusun Perangkat Pembelajaran...';
+
+      const data = getFormData();
+      const apiKey = document.getElementById('geminiApiKey')?.value.trim();
+
+      try {
+        if (modeAktif === 'gemini' && apiKey !== '') {
+          try {
+            await susunDenganGemini(data, apiKey);
+          } catch (apiError) {
+            console.warn("Gemini API bermasalah, beralih ke engine standar:", apiError);
+            alert(`Pemberitahuan Gemini AI: ${apiError.message}\n\nSistem otomatis mengalihkan dokumen ke Mode Cepat Standar.`);
+            susunStandarLengkap(data);
+          }
+        } else {
+          susunStandarLengkap(data);
+        }
+
+        // Render current selected document tab
+        pindahTab(tabTerpilih);
+      } catch (err) {
+        console.error(err);
+        susunStandarLengkap(data);
+        pindahTab(tabTerpilih);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
     }
 
-    function ttdTabel(d) {
-      return '<table class="ttd-box">' +
-        '<tr>' +
-          '<td>Mengetahui,<br>Kepala ' + d.sekolah + '<br><br><br><br><strong><u>' + d.kepsek + '</u></strong><br>NIP. ' + d.nipKepsek + '</td>' +
-          '<td>Disusun di Tempat, 2026<br>Guru Mata Pelajaran<br><br><br><br><strong><u>' + d.guru + '</u></strong><br>NIP. ' + d.nipGuru + '</td>' +
-        '</tr>' +
-      '</table>';
+    // High Quality Offline Template Engine
+    function susunStandarLengkap(d) {
+      const catatanKhusus = d.materiKustom ? `
+        <div style="background:#f0fdf4; border:1px solid #86efac; padding:12px; border-radius:6px; margin-bottom:15px; font-size:0.92rem;">
+          <strong class="text-success"><i class="fa-solid fa-thumbtack me-1"></i>Catatan Khusus Pengampu (Materi Terintegrasi):</strong><br>
+          ${d.materiKustom.replace(/\n/g, '<br>')}
+        </div>
+      ` : '';
+
+      // 1. CP
+      daftarDokumen['cp'] = `
+        <div class="doc-title">ANALISIS CAPAIAN PEMBELAJARAN (CP)</div>
+        <div class="doc-subtitle">TAHUN PELAJARAN ${d.tahun}</div>
+        ${buatKopMeta(d)}
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="20%">Elemen</th>
+              <th width="40%">Capaian Pembelajaran (CP) Elemen</th>
+              <th width="20%">Kompetensi (KKO)</th>
+              <th width="20%">Lingkup Materi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Pemahaman ${d.mapel}</strong></td>
+              <td>Peserta didik mampu memahami konsep fundamental terkait <strong>${d.topik}</strong>, menganalisis keterkaitan antar-gagasan, serta menerapkannya dalam memecahkan persoalan kehidupan bermasyarakat dan berbangsa.</td>
+              <td>Menganalisis (C4), Menjelaskan (C2), Mengidentifikasi (C2)</td>
+              <td>${d.topik}</td>
+            </tr>
+            <tr>
+              <td><strong>Keterampilan Proses</strong></td>
+              <td>Mengidentifikasi isu kontekstual, merumuskan hipotesis ilmiah, mengumpulkan data terpercaya, serta mengomunikasikan simpulan melalui karya lisan maupun tulisan.</td>
+              <td>Menyelidiki (P3), Menyajikan (P3), Mengomunikasikan (P2)</td>
+              <td>Aplikasi & Investigasi Kasus Nyata</td>
+            </tr>
+          </tbody>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 2. TP
+      daftarDokumen['tp'] = `
+        <div class="doc-title">RUMUSAN TUJUAN PEMBELAJARAN (TP)</div>
+        <div class="doc-subtitle">KURIKULUM MERDEKA</div>
+        ${buatKopMeta(d)}
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="10%">Kode</th>
+              <th width="50%">Rumusan Tujuan Pembelajaran (Format ABCD)</th>
+              <th width="25%">Dimensi Profil Pelajar Pancasila</th>
+              <th width="15%">Alokasi JP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="center"><strong>TP.01</strong></td>
+              <td>Melalui telaah materi dan tayangan informasi (C), peserta didik (A) mampu <strong>menjelaskan latar belakang, makna, dan pokok penting dari ${d.topik}</strong> (B) secara tepat dan mandiri (D).</td>
+              <td>Bernalar Kritis, Mandiri</td>
+              <td align="center">2 JP</td>
+            </tr>
+            <tr>
+              <td align="center"><strong>TP.02</strong></td>
+              <td>Melalui diskusi kolaboratif berbasis sintaks <em>${d.model}</em> (C), peserta didik (A) mampu <strong>menganalisis implementasi serta dinamika dalam ${d.topik}</strong> (B) dengan argumentasi ilmiah yang runtut (D).</td>
+              <td>Bergotong Royong, Bernalar Kritis</td>
+              <td align="center">3 JP</td>
+            </tr>
+            <tr>
+              <td align="center"><strong>TP.03</strong></td>
+              <td>Melalui penugasan lembar investigasi kontekstual (C), peserta didik (A) mampu <strong>menyajikan aksi nyata atau gagasan solutif terkait ${d.topik}</strong> (B) dalam bentuk karya kreatif yang komunikatif (D).</td>
+              <td>Kreatif, Gotong Royong</td>
+              <td align="center">2 JP</td>
+            </tr>
+          </tbody>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 3. ATP
+      daftarDokumen['atp'] = `
+        <div class="doc-title">ALUR TUJUAN PEMBELAJARAN (ATP)</div>
+        <div class="doc-subtitle">MATA PELAJARAN ${d.mapel.toUpperCase()}</div>
+        ${buatKopMeta(d)}
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="8%">Alur</th>
+              <th width="35%">Capaian Alur Pembelajaran</th>
+              <th width="27%">Materi & Sub-Topik</th>
+              <th width="18%">Bentuk Asesmen</th>
+              <th width="12%">JP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="center">1</td>
+              <td>Memahami konsep dasar, kronologi, serta substansi pokok ${d.topik}.</td>
+              <td>Konsep Awal & Sejarah ${d.topik}</td>
+              <td>Formatif: Tanya Jawab Awal & Kuis Singkat</td>
+              <td align="center">2 JP</td>
+            </tr>
+            <tr>
+              <td align="center">2</td>
+              <td>Menganalisis hubungan nilai, dinamika perkembangan, dan studi peristiwa kontekstual.</td>
+              <td>Dinamika Konsep & Telaah Kasus</td>
+              <td>Formatif: Lembar Kerja Kelompok (LKPD)</td>
+              <td align="center">3 JP</td>
+            </tr>
+            <tr>
+              <td align="center">3</td>
+              <td>Menyusun simpulan kritis dan merancang rekomendasi karya/proyek pembiasaan.</td>
+              <td>Penyajian Hasil Investigasi & Refleksi</td>
+              <td>Sumatif: Unjuk Kerja & Presentasi Proyek</td>
+              <td align="center">2 JP</td>
+            </tr>
+          </tbody>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 4. Prota
+      daftarDokumen['prota'] = `
+        <div class="doc-title">PROGRAM TAHUNAN (PROTA)</div>
+        <div class="doc-subtitle">TAHUN PELAJARAN ${d.tahun}</div>
+        ${buatKopMeta(d)}
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="8%">Smt</th>
+              <th width="12%">No. TP</th>
+              <th width="50%">Lingkup Materi / Capaian Pembelajaran</th>
+              <th width="15%">Alokasi JP</th>
+              <th width="15%">Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="4" align="center" style="vertical-align:middle;"><strong>I (Ganjil)</strong></td>
+              <td align="center">TP 1.1</td>
+              <td>Hakikat, Sejarah, dan Gagasan Pokok ${d.topik}</td>
+              <td align="center">12 JP</td>
+              <td>Reguler</td>
+            </tr>
+            <tr>
+              <td align="center">TP 1.2</td>
+              <td>Analisis Kontekstual, Studi Dinamika Kasus, dan Penerapan Nilai</td>
+              <td align="center">15 JP</td>
+              <td>Reguler</td>
+            </tr>
+            <tr>
+              <td align="center">TP 1.3</td>
+              <td>Proyek Penerapan Nilai & Penilaian Kinerja Kolaboratif</td>
+              <td align="center">9 JP</td>
+              <td>Proyek Terpadu</td>
+            </tr>
+            <tr style="background:#f8fafc; font-weight:bold;">
+              <td colspan="2" align="center">TOTAL SEMESTER GANJIL</td>
+              <td align="center">36 JP</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td rowspan="4" align="center" style="vertical-align:middle;"><strong>II (Genap)</strong></td>
+              <td align="center">TP 2.1</td>
+              <td>Penegakan Aturan, Harmonisasi Sosial, dan Tanggung Jawab Warga</td>
+              <td align="center">12 JP</td>
+              <td>Reguler</td>
+            </tr>
+            <tr>
+              <td align="center">TP 2.2</td>
+              <td>Keberagaman Budaya, Solidaritas Kebangsaan, dan Partisipasi Global</td>
+              <td align="center">15 JP</td>
+              <td>Reguler</td>
+            </tr>
+            <tr>
+              <td align="center">TP 2.3</td>
+              <td>Asesmen Portofolio Akhir & Pameran Karya Akhir Tahun</td>
+              <td align="center">9 JP</td>
+              <td>Sumatif</td>
+            </tr>
+            <tr style="background:#f8fafc; font-weight:bold;">
+              <td colspan="2" align="center">TOTAL SEMESTER GENAP</td>
+              <td align="center">36 JP</td>
+              <td>-</td>
+            </tr>
+            <tr style="background:#e2e8f0; font-weight:bold; font-size:1.05rem;">
+              <td colspan="3" align="center">TOTAL SATU TAHUN AJARAN</td>
+              <td align="center">72 JP</td>
+              <td>Tuntas</td>
+            </tr>
+          </tbody>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 5. Promes
+      daftarDokumen['promes'] = `
+        <div class="doc-title">PROGRAM SEMESTER (PROMES)</div>
+        <div class="doc-subtitle">SEMESTER ${d.semester.toUpperCase()} - TAHUN PELAJARAN ${d.tahun}</div>
+        ${buatKopMeta(d)}
+        <div style="overflow-x:auto;">
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th rowspan="2" width="5%">No</th>
+                <th rowspan="2" width="38%">Materi Pokok / Capaian Pembelajaran</th>
+                <th rowspan="2" width="7%">JP</th>
+                <th colspan="4">Bulan 1</th>
+                <th colspan="4">Bulan 2</th>
+                <th colspan="4">Bulan 3</th>
+                <th colspan="4">Bulan 4</th>
+                <th colspan="4">Bulan 5</th>
+                <th colspan="4">Bulan 6</th>
+              </tr>
+              <tr style="font-size:0.75rem;">
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="center">1</td>
+                <td>Konsep Pengantar & Gagasan Dasar ${d.topik}</td>
+                <td align="center">6</td>
+                <td align="center">3</td><td align="center">3</td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+              <tr>
+                <td align="center">2</td>
+                <td>Eksplorasi Konsep, Telaah Sejarah & Makna Keseharian</td>
+                <td align="center">9</td>
+                <td></td><td></td><td align="center">3</td><td align="center">3</td>
+                <td align="center">3</td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+              <tr>
+                <td align="center">3</td>
+                <td>Analisis Kasus, Investigasi Terbimbing & Pengisian LKPD</td>
+                <td align="center">9</td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td align="center">3</td><td align="center">3</td><td align="center">3</td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+              <tr>
+                <td align="center">4</td>
+                <td>Proyek Kolaboratif Siswa & Presentasi Hasil Diskusi</td>
+                <td align="center">6</td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td align="center">3</td><td align="center">3</td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+              <tr>
+                <td align="center">5</td>
+                <td>Asesmen Sumatif Lingkup Materi & Tindak Lanjut Pengayaan</td>
+                <td align="center">6</td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td align="center">3</td><td align="center">3</td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+              </tr>
+              <tr style="background:#f1f5f9; font-weight:bold;">
+                <td colspan="2" align="center">TOTAL ALOKASI JP</td>
+                <td align="center">36</td>
+                <td colspan="24" align="center">Terdistribusi Lengkap Sesuai Pekan Efektif Kalender Pendidikan</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 6. Modul Ajar (RPP)
+      daftarDokumen['modul'] = `
+        <div class="doc-title">MODUL AJAR (RPP LENGKAP)</div>
+        <div class="doc-subtitle">KURIKULUM MERDEKA</div>
+        ${buatKopMeta(d)}
+        ${catatanKhusus}
+        
+        <div class="section-header">I. INFORMASI UMUM</div>
+        <table class="doc-table">
+          <tr><td width="30%"><strong>Target Peserta Didik</strong></td><td>Peserta didik reguler / tipikal di satuan pendidikan jenjang ${d.fase}.</td></tr>
+          <tr><td><strong>Model Pembelajaran</strong></td><td><strong>${d.model}</strong> (Pendekatan Saintifik & Diskusi Kelompok)</td></tr>
+          <tr><td><strong>Profil Pelajar Pancasila</strong></td><td>1. <strong>Bernalar Kritis</strong>: Mampu memproses informasi objektif dan menganalisis sebab-akibat.<br>2. <strong>Bergotong Royong</strong>: Aktif bekerja sama dalam tim saat investigasi kasus.<br>3. <strong>Kreatif</strong>: Mengembangkan gagasan orisinal dalam menyajikan pemecahan masalah.</td></tr>
+          <tr><td><strong>Sarana & Prasarana</strong></td><td>Papan tulis, Proyektor LCD/Video Pembelajaran, LKPD Siswa, Buku Siswa, Sumber Berita Aktual.</td></tr>
+          <tr><td><strong>Pemahaman Bermakna</strong></td><td>Materi <strong>${d.topik}</strong> memberikan landasan penting bagi peserta didik untuk memahami nilai-nilai luhur dan menerapkannya sebagai pedoman dalam hidup bermasyarakat.</td></tr>
+          <tr><td><strong>Pertanyaan Pemantik</strong></td><td>1. Mengapa materi mengenai ${d.topik} ini sangat krusial dipahami oleh generasi masa kini?<br>2. Tantangan apa yang sering kita jumpai dalam menerapkan prinsip ${d.topik} di kehidupan sehari-hari?</td></tr>
+        </table>
+
+        <div class="section-header">II. LANGKAH-LANGKAH KEGIATAN PEMBELAJARAN</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="20%">Tahapan</th>
+              <th width="65%">Deskripsi Kegiatan Guru & Siswa</th>
+              <th width="15%">Alokasi Waktu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Pendahuluan</strong></td>
+              <td>
+                1. Guru membuka pembelajaran dengan salam, menyapa siswa, dan berdoa bersama.<br>
+                2. Guru mengecek kesiapan belajar, kerapian kelas, dan kehadiran peserta didik.<br>
+                3. <strong>Apersepsi</strong>: Guru memberikan stimulus berupa tayangan atau pertanyaan pemantik terkait ${d.topik}.<br>
+                4. Guru menyampaikan tujuan pembelajaran dan alur aktivitas yang akan dilaksanakan.
+              </td>
+              <td align="center">15 Menit</td>
+            </tr>
+            <tr>
+              <td><strong>Kegiatan Inti</strong><br><small class="text-muted">(Sintaks ${d.model})</small></td>
+              <td>
+                <strong>Fase 1 - Penentuan Masalah / Studi Kasus:</strong> Guru menyajikan peristiwa atau teks berita terkait ${d.topik}. Siswa mencatat kejanggalan dan pertanyaan pemantik.<br>
+                <strong>Fase 2 - Perancangan Proyek / Diskusi Kelompok:</strong> Siswa dikelompokkan ke dalam tim heterogen (4-5 siswa). Setiap tim dibagikan <strong>Bahan Ajar & LKPD</strong>.<br>
+                <strong>Fase 3 - Penyelidikan & Pengumpulan Data:</strong> Siswa membaca materi rujukan, mendiskusikan persoalan pada lembar kerja, dan menyusun argumen bersama rekan tim. Guru mendampingi jalannya diskusi.<br>
+                <strong>Fase 4 - Penyusunan Karya & Solusi:</strong> Setiap kelompok merumuskan jawaban serta produk gagasan di kolom LKPD secara sistematis.<br>
+                <strong>Fase 5 - Presentasi & Evaluasi:</strong> Masing-masing perwakilan kelompok memaparkan hasil temuannya. Guru memberikan tanggapan, penguatan materi, serta kesimpulan bersama.
+              </td>
+              <td align="center">90 Menit</td>
+            </tr>
+            <tr>
+              <td><strong>Penutup</strong></td>
+              <td>
+                1. Peserta didik bersama guru menyimpulkan inti pembelajaran yang telah berlangsung.<br>
+                2. <strong>Refleksi</strong>: Siswa menyampaikan hal yang telah dipahami dan hal yang masih perlu dieksplorasi lebih jauh.<br>
+                3. Guru menyampaikan rencana materi pembelajaran pada pertemuan berikutnya.<br>
+                4. Doa penutup bersama dan guru mengakhiri pelajaran dengan salam.
+              </td>
+              <td align="center">15 Menit</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-header">III. ASESMEN & EVALUASI</div>
+        <table class="doc-table">
+          <tr><td width="30%"><strong>Asesmen Diagnostik (Awal)</strong></td><td>Tanya-jawab lisan apersepsi pengetahuan awal terkait topik pembelajaran.</td></tr>
+          <tr><td><strong>Asesmen Formatif (Proses)</strong></td><td>Observasi keterlibatan diskusi dan ketepatan pengisian LKPD siswa.</td></tr>
+          <tr><td><strong>Asesmen Sumatif (Akhir)</strong></td><td>Tes tertulis evaluasi pemahaman konsep dan unjuk kerja hasil presentasi.</td></tr>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 7. Bahan Ajar Lengkap
+      const ulasanMateri = d.materiKustom ? `
+        <div style="background:#fff; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:15px; line-height:1.75; text-align:justify;">
+          <h6 class="fw-bold text-success"><i class="fa-solid fa-bookmark me-2"></i>Uraian Pokok Berdasarkan Rujukan Guru:</h6>
+          <p>${d.materiKustom.replace(/\n/g, '<br>')}</p>
+        </div>
+      ` : `
+        <div style="background:#fff; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:15px; line-height:1.75; text-align:justify;">
+          <h6 class="fw-bold text-primary"><i class="fa-solid fa-bookmark me-2"></i>Uraian Konsep Esensial ${d.topik}:</h6>
+          <p>
+            Pembahasan mengenai <strong>${d.topik}</strong> memiliki kedudukan yang sangat fundamental dalam pembelajaran <em>${d.mapel}</em>. Melalui materi ini, peserta didik diajak untuk menelaah secara komprehensif latar belakang gagasan, nilai-nilai etis, serta relevansi penerapannya dalam kehidupan bermasyarakat sehari-hari.
+          </p>
+          <p>
+            Secara garis besar, materi ini memuat pilar-pilar penting yaitu: (1) <strong>Pondasi Konseptual</strong> yang menguraikan makna dasar dan hakikat nilai; (2) <strong>Dinamika Penerapan</strong> yang menunjukkan bagaimana nilai-nilai tersebut diuji dan dipraktikkan dalam situasi riil; serta (3) <strong>Tanggung Jawab Personal & Kolektif</strong> dalam menjaga keberlangsungan tatanan sosial yang harmonis dan berkeadilan.
+          </p>
+        </div>
+      `;
+
+      daftarDokumen['bahan'] = `
+        <div class="doc-title">BAHAN AJAR PESERTA DIDIK</div>
+        <div class="doc-subtitle">MATERI POKOK: ${d.topik.toUpperCase()}</div>
+        ${buatKopMeta(d)}
+        ${catatanKhusus}
+
+        <div class="section-header">A. CAPAIAN PEMBELAJARAN & TARGET BELAJAR</div>
+        <p style="text-align:justify;">Setelah membaca dan mempelajari bahan ajar ini, peserta didik diharapkan mampu memahami substansi <strong>${d.topik}</strong>, mengidentifikasi faktor pendorong dan tantangannya, serta menunjukkan sikap bijak dalam menerapkannya di lingkungan sekolah dan keluarga.</p>
+
+        <div class="section-header">B. PEMBAHASAN MATERI MENDALAM</div>
+        ${ulasanMateri}
+
+        <div class="section-header">C. MATRIKS PETA KONSEP & INDIKATOR PENTING</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="30%">Dimensi Konsep</th>
+              <th width="45%">Karakteristik & Penjelasan Ilmiah</th>
+              <th width="25%">Contoh Riil di Lingkungan Siswa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Pondasi Nilai / Gagasan</strong></td>
+              <td>Prinsip inti yang menjadi pegangan utama dalam memahami materi ${d.topik}. Bersifat universal dan mengikat moral bersama.</td>
+              <td>Sikap saling menghormati pendapat, kejujuran, dan keadilan dalam berinteraksi.</td>
+            </tr>
+            <tr>
+              <td><strong>Aplikasi Fungsional</strong></td>
+              <td>Bentuk tindakan nyata yang mencerminkan pemahaman materi dalam situasi sehari-hari.</td>
+              <td>Kerja bakti kelas, musyawarah menentukan ketua kelompok, dan gotong royong.</td>
+            </tr>
+            <tr>
+              <td><strong>Tantangan & Solusi</strong></td>
+              <td>Hambatan yang sering muncul akibat perbedaan sudut pandang serta jalan keluar yang berkeadaban.</td>
+              <td>Menyelesaikan perselisihan melalui dialog damai tanpa kekerasan.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-header">D. GLOSARIUM ISTILAH KUNCI</div>
+        <table class="doc-table">
+          <tr><td width="25%"><strong>Konsensus</strong></td><td>Kesepakatan bersama yang dicapai melalui musyawarah oleh seluruh pihak terkait.</td></tr>
+          <tr><td width="25%"><strong>Integritas</strong></td><td>Keselarasan antara hati nurani, ucapan, dan perbuatan yang berlandaskan kebenaran etis.</td></tr>
+          <tr><td width="25%"><strong>Harmoni Sosial</strong></td><td>Kondisi kehidupan masyarakat yang tertib, damai, dan saling menghargai keberagaman.</td></tr>
+        </table>
+
+        <div class="section-header">E. PERTANYAAN REFLEKSI SISWA</div>
+        <ol style="padding-left:1.5rem; line-height:1.8;">
+          <li>Mengapa penghayatan terhadap konsep <strong>${d.topik}</strong> perlu dimulai dari diri sendiri dan lingkungan terdekat kita?</li>
+          <li>Sebutkan satu contoh peristiwa di sekitar Anda yang menunjukkan pentingnya memegang teguh nilai dalam materi ini!</li>
+        </ol>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 8. LKPD Siswa
+      daftarDokumen['lkpd'] = `
+        <div class="doc-title">LEMBAR KERJA PESERTA DIDIK (LKPD)</div>
+        <div class="doc-subtitle">AKTIVITAS INVESTIGASI SISWA BERDIFERENSIASI</div>
+        
+        <table class="meta-table" style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; margin-bottom:15px;">
+          <tr><td width="15%"><strong>Nama Kelompok</strong></td><td width="35%">: ....................................................</td><td width="15%"><strong>Mata Pelajaran</strong></td><td width="35%">: ${d.mapel}</td></tr>
+          <tr><td><strong>Anggota Tim</strong></td><td>: 1. ................................................<br>&nbsp;&nbsp;2. ................................................<br>&nbsp;&nbsp;3. ................................................<br>&nbsp;&nbsp;4. ................................................</td><td><strong>Fase / Kelas</strong><br><strong>Waktu Kerja</strong><br><strong>Materi Pokok</strong></td><td>: ${d.fase}<br>: 45 Menit<br>: <strong>${d.topik}</strong></td></tr>
+        </table>
+        ${catatanKhusus}
+
+        <div class="section-header">A. PETUNJUK PENGERJAAN</div>
+        <ul style="padding-left:1.5rem; margin-bottom:1rem; line-height:1.6;">
+          <li>Bacalah Bahan Ajar atau rujukan buku teks sebelum menjawab setiap instruksi.</li>
+          <li>Bekerjasamalah secara aktif dan bagi tugas secara seimbang dengan seluruh anggota kelompok Anda.</li>
+          <li>Tuliskan hasil investigasi dengan bahasa yang santun, logis, dan bertanggung jawab.</li>
+        </ul>
+
+        <div class="section-header">B. STIMULUS KASUS / PERISTIWA KONTEKSTUAL</div>
+        <div style="background:#fffbeb; border:1px solid #fde68a; padding:12px; border-radius:6px; margin-bottom:15px; line-height:1.6; text-align:justify;">
+          <strong>Kasus Kontekstual:</strong> Di sebuah lingkungan pergaulan remaja, terdapat perbedaan pendapat yang cukup tajam saat menyepakati aturan bersama untuk kegiatan sosial. Sebagian anggota memaksakan kehendak pribadinya sehingga menimbulkan ketidakharmonisan. Kelompok Anda diminta untuk menganalisis kejadian tersebut dengan merujuk pada prinsip-prinsip <strong>${d.topik}</strong> agar tercipta mufakat yang berkeadilan!
+        </div>
+
+        <div class="section-header">C. LEMBAR DISKUSI & RUANG JAWABAN</div>
+        <p class="fw-bold mb-1">1. Sebutkan dan jelaskan 3 (tiga) nilai esensial dalam ${d.topik} yang relevan untuk menyelesaikan perselisihan tersebut!</p>
+        <table class="doc-table">
+          <thead><tr><th width="30%">Nama Nilai / Gagasan</th><th width="50%">Makna & Makna Penting</th><th width="20%">Bentuk Penerapan</th></tr></thead>
+          <tbody>
+            <tr><td style="height:35px;"></td><td></td><td></td></tr>
+            <tr><td style="height:35px;"></td><td></td><td></td></tr>
+            <tr><td style="height:35px;"></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+
+        <p class="fw-bold mb-1" style="margin-top:15px;">2. Menurut kelompok Anda, apa akibat yang akan terjadi jika nilai-nilai dalam ${d.topik} diabaikan dalam pergaulan sehari-hari?</p>
+        <div style="border:1px dashed #475569; min-height:85px; padding:10px; background:#fff; border-radius:4px; margin-bottom:14px;">
+          <em class="text-muted small">Tuliskan ulasan analisis kelompok Anda di sini...</em>
+        </div>
+
+        <p class="fw-bold mb-1">3. Rumuskan 2 (dua) solusi nyata / langkah konkret yang dapat dilakukan generasi muda dalam mengamalkan ${d.topik} di sekolah!</p>
+        <div style="border:1px dashed #475569; min-height:85px; padding:10px; background:#fff; border-radius:4px;">
+          <em class="text-muted small">Tuliskan usulan solusi kreatif di sini...</em>
+        </div>
+
+        <div class="section-header">D. RUBRIK PENILAIAN KINERJA DISKUSI</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th width="25%">Aspek Penilaian</th>
+              <th width="25%">Skor 4 (Sangat Baik)</th>
+              <th width="25%">Skor 3 (Baik)</th>
+              <th width="25%">Skor 2 / 1 (Cukup)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Ketepatan Konsep</strong></td>
+              <td>Semua uraian tepat dan argumentasi relevan dengan substansi materi.</td>
+              <td>Sebagian besar uraian tepat dengan alasan yang memadai.</td>
+              <td>Uraian belum runtut dan masih terdapat kekeliruan konsep.</td>
+            </tr>
+            <tr>
+              <td><strong>Kekompakan Tim</strong></td>
+              <td>Seluruh anggota aktif berdiskusi dan saling membantu menyelesaikan tugas.</td>
+              <td>Mayoritas anggota tim berpartisipasi aktif.</td>
+              <td>Hanya dikerjakan oleh satu orang perwakilan saja.</td>
+            </tr>
+          </tbody>
+        </table>
+        ${buatTandaTangan(d)}
+      `;
+
+      // 9. Paket Lengkap Bundle
+      daftarDokumen['semua'] = `
+        ${daftarDokumen['cp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['tp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['atp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['prota']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['promes']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['modul']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['bahan']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['lkpd']}
+      `;
     }
 
-    // Fungsi Utama Penyusun Seluruh Dokumen
-    function buatSemuaDokumen() {
-      var d = ambilNilai();
-      
-      var kotakKustom = '';
-      if (d.materi) {
-        kotakKustom = '<div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-bottom:15px; font-size:0.9rem;">' +
-          '<strong><i style="color:#166534;">Catatan Khusus Guru (Materi Terintegrasi):</i></strong><br>' +
-          d.materi.replace(/\n/g, '<br>') +
-        '</div>';
+    // Gemini API Direct Fetch Engine
+    async function susunDenganGemini(d, apiKey) {
+      const model = document.getElementById('geminiModel').value || 'gemini-3.8-flash';
+      const temp = parseFloat(document.getElementById('geminiTemp').value) || 0.3;
+
+      const pesanMateri = d.materiKustom ? `
+RUJUKAN MATERI DARI GURU PENGAMPU:
+"""${d.materiKustom}"""
+Perhatian: Integrasikan materi rujukan di atas secara mendalam ke dalam "Bahan Ajar" dan "LKPD".` : '';
+
+      const systemPrompt = `Anda adalah konsultan ahli kurikulum dan perancang administrasi guru resmi Kemendikbudristek Indonesia.
+Tugas Anda adalah membuat teks HTML perangkat pembelajaran Kurikulum Merdeka yang lengkap dan bermutu tinggi.
+Satuan Pendidikan: ${d.sekolah}
+Guru: ${d.guru} (NIP: ${d.nipGuru})
+Kepala Sekolah: ${d.kepsek} (NIP: ${d.nipKepsek})
+Mata Pelajaran: ${d.mapel}
+Fase & Kelas: ${d.fase}
+Semester / Tahun: ${d.semester} / ${d.tahun}
+Topik Materi: ${d.topik}
+Model Pembelajaran: ${d.model}
+${pesanMateri}
+
+ATURAN OUTPUT:
+Kembalikan HANYA format JSON valid tanpa tanda petik markdown triple-backtick:
+{
+  "cp": "string HTML potongan tabel analisis CP",
+  "tp": "string HTML potongan tabel TP format ABCD",
+  "atp": "string HTML potongan tabel alur ATP",
+  "prota": "string HTML potongan tabel Prota 72 JP",
+  "promes": "string HTML potongan matriks Promes 6 bulan",
+  "modul": "string HTML Modul Ajar RPP lengkap dengan sintaks",
+  "bahan": "string HTML Bahan Ajar siswa lengkap dengan peta konsep dan glosarium",
+  "lkpd": "string HTML LKPD lengkap dengan kasus, pertanyaan isian, dan rubrik"
+}`;
+
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt }] }],
+          generationConfig: {
+            temperature: temp,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || 'Gagal berkomunikasi dengan API Google Gemini.');
       }
 
-      // 1. Modul Ajar (RPP)
-      berkas['modul'] = '<div class="doc-title">MODUL AJAR (RPP LENGKAP)</div>' +
-        '<div class="doc-subtitle">KURIKULUM MERDEKA</div>' +
-        kopTabel(d) + kotakKustom +
-        '<div class="section-head">I. INFORMASI UMUM</div>' +
-        '<table class="doc-table">' +
-          '<tr><td width="30%"><strong>Target Peserta Didik</strong></td><td>Peserta didik reguler pada jenjang ' + d.fase + '.</td></tr>' +
-          '<tr><td><strong>Model Pembelajaran</strong></td><td><strong>' + d.model + '</strong> (Pendekatan Saintifik & Kolaboratif)</td></tr>' +
-          '<tr><td><strong>Profil Pelajar Pancasila</strong></td><td>Bernalar Kritis, Bergotong Royong, dan Mandiri.</td></tr>' +
-          '<tr><td><strong>Pemahaman Bermakna</strong></td><td>Peserta didik memahami urgensi <strong>' + d.topik + '</strong> dalam kehidupan berbangsa dan bermasyarakat.</td></tr>' +
-          '<tr><td><strong>Pertanyaan Pemantik</strong></td><td>1. Mengapa materi ' + d.topik + ' ini sangat penting bagi kita?<br>2. Bagaimana kita menerapkannya di lingkungan sekolah?</td></tr>' +
-        '</table>' +
-        '<div class="section-head">II. LANGKAH-LANGKAH KEGIATAN</div>' +
-        '<table class="doc-table">' +
-          '<thead><tr><th width="20%">Tahap</th><th width="65%">Deskripsi Kegiatan</th><th width="15%">Waktu</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td><strong>Pendahuluan</strong></td><td>1. Guru membuka dengan salam dan doa.<br>2. Apersepsi stimulus fenomena ' + d.topik + '.<br>3. Penyampaian tujuan pembelajaran dan langkah kerja.</td><td align="center">15 Menit</td></tr>' +
-            '<tr><td><strong>Kegiatan Inti</strong><br><small>(' + d.model + ')</small></td><td>1. <strong>Orientasi Masalah:</strong> Guru menyajikan kasus terkait ' + d.topik + '.<br>2. <strong>Organisasi Belajar:</strong> Siswa dibagi kelompok dan menerima Bahan Ajar & LKPD.<br>3. <strong>Penyelidikan:</strong> Siswa mengkaji materi dan berdiskusi.<br>4. <strong>Penyajian:</strong> Kelompok memaparkan hasil laporan LKPD.<br>5. <strong>Evaluasi:</strong> Guru memberi penguatan konsep ilmiah.</td><td align="center">90 Menit</td></tr>' +
-            '<tr><td><strong>Penutup</strong></td><td>1. Kesimpulan dan refleksi bersama siswa.<br>2. Arahan pembelajaran berikutnya dan doa penutup.</td><td align="center">15 Menit</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        '<div class="section-head">III. ASESMEN</div>' +
-        '<table class="doc-table">' +
-          '<tr><td width="30%"><strong>Diagnostik</strong></td><td>Tanya jawab lisan apersepsi awal.</td></tr>' +
-          '<tr><td><strong>Formatif</strong></td><td>Observasi diskusi kelompok dan ketuntasan lembar LKPD.</td></tr>' +
-          '<tr><td><strong>Sumatif</strong></td><td>Uji pemahaman tertulis dan penilaian unjuk kerja presentasi.</td></tr>' +
-        '</table>' +
-        ttdTabel(d);
+      const resJson = await res.json();
+      let rawText = resJson.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
-      // 2. Bahan Ajar Lengkap
-      var isiBacaan = d.materi ? d.materi.replace(/\n/g, '<br>') :
-        'Materi <strong>' + d.topik + '</strong> merupakan pembahasan esensial dalam mata pelajaran <em>' + d.mapel + '</em>. Konsep ini menuntun peserta didik untuk memahami latar belakang, prinsip utama, dan penerapannya secara nyata di kehidupan sehari-hari.<br><br>' +
-        'Prinsip ini mencakup pemahaman hakikat, analisis sebab-akibat, serta tanggung jawab personal maupun sosial dalam menjaga keharmonisan tatanan kehidupan bermasyarakat.';
+      const parsed = JSON.parse(rawText);
+      for (let k in parsed) {
+        daftarDokumen[k] = `
+          ${parsed[k]}
+          ${buatTandaTangan(d)}
+        `;
+      }
 
-      berkas['bahan'] = '<div class="doc-title">BAHAN AJAR PESERTA DIDIK</div>' +
-        '<div class="doc-subtitle">MATERI POKOK: ' + d.topik.toUpperCase() + '</div>' +
-        kopTabel(d) +
-        '<div class="section-head">A. TUJUAN BELAJAR</div>' +
-        '<p style="margin-bottom:12px;">Peserta didik mampu menelaah dan menguasai konsep <strong>' + d.topik + '</strong> serta mengaplikasikannya dalam konteks sosial lingkungan sekitar.</p>' +
-        '<div class="section-head">B. URAIAN MATERI PEMBELAJARAN</div>' +
-        '<div style="background:#fff; border:1px solid #cbd5e1; padding:15px; border-radius:6px; line-height:1.7; text-align:justify; margin-bottom:15px;">' + isiBacaan + '</div>' +
-        '<div class="section-head">C. MATRIKS PETA KONSEP</div>' +
-        '<table class="doc-table">' +
-          '<thead><tr><th width="30%">Dimensi Konsep</th><th width="45%">Deskripsi Pokok</th><th width="25%">Contoh Riil</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td><strong>Pondasi Dasar</strong></td><td>Prinsip utama yang melandasi ' + d.topik + '.</td><td>Penerapan di lingkungan terdekat.</td></tr>' +
-            '<tr><td><strong>Aplikasi Nyata</strong></td><td>Bentuk tindakan konkret dalam keseharian.</td><td>Kerja sama dan musyawarah mufakat.</td></tr>' +
-            '<tr><td><strong>Tantangan & Solusi</strong></td><td>Solusi bijak menghadapi hambatan di lapangan.</td><td>Penyelesaian masalah lewat dialog damai.</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        '<div class="section-head">D. GLOSARIUM KATA KUNCI</div>' +
-        '<table class="doc-table">' +
-          '<tr><td width="30%"><strong>Integritas</strong></td><td>Keselarasan antara ucapan, prinsip hati nurani, dan tindakan nyata.</td></tr>' +
-          '<tr><td><strong>Konsensus</strong></td><td>Mufakat bulat yang disetujui bersama demi kemaslahatan kelompok.</td></tr>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 3. LKPD Siswa
-      berkas['lkpd'] = '<div class="doc-title">LEMBAR KERJA PESERTA DIDIK (LKPD)</div>' +
-        '<div class="doc-subtitle">AKTIVITAS INVESTIGASI SISWA KELOMPOK</div>' +
-        '<table class="meta-table" style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; margin-bottom:15px;">' +
-          '<tr><td width="15%"><strong>Kelompok</strong></td><td width="35%">: ............................................</td><td width="15%"><strong>Mata Pelajaran</strong></td><td width="35%">: ' + d.mapel + '</td></tr>' +
-          '<tr><td><strong>Anggota</strong></td><td>: 1. ........................................<br>: 2. ........................................</td><td><strong>Fase / Waktu</strong><br><strong>Materi</strong></td><td>: ' + d.fase + ' / 45 Menit<br>: <strong>' + d.topik + '</strong></td></tr>' +
-        '</table>' +
-        kotakKustom +
-        '<div class="section-head">A. PETUNJUK PENGERJAAN</div>' +
-        '<ol style="margin-left:20px; line-height:1.6; margin-bottom:12px;">' +
-          '<li>Pelajari Bahan Ajar yang telah disediakan secara seksama bersama tim.</li>' +
-          '<li>Diskusikan setiap pertanyaan di bawah ini dengan kerja sama yang solid.</li>' +
-        '</ol>' +
-        '<div class="section-head">B. STIMULUS STUDI KASUS</div>' +
-        '<div style="background:#fffbeb; border:1px solid #fde68a; padding:12px; border-radius:6px; line-height:1.6; margin-bottom:15px;">' +
-          '<strong>Kasus:</strong> Di suatu lingkungan, terjadi silang pendapat yang memicu ketegangan dalam musyawarah bersama. Kelompok Anda bertindak sebagai penengah untuk menganalisis dan menghadirkan solusi yang selaras dengan nilai <strong>' + d.topik + '</strong>!' +
-        '</div>' +
-        '<div class="section-head">C. PERTANYAAN INVESTIGASI & RUANG JAWABAN</div>' +
-        '<p><strong>1. Uraikan 3 unsur nilai penting dalam ' + d.topik + ' yang menjadi kunci pemecahan kasus!</strong></p>' +
-        '<table class="doc-table"><thead><tr><th>Unsur Nilai</th><th>Penjelasan</th><th>Penerapan</th></tr></thead><tbody><tr><td style="height:35px;"></td><td></td><td></td></tr><tr><td style="height:35px;"></td><td></td><td></td></tr></tbody></table>' +
-        '<p style="margin-top:12px;"><strong>2. Analisis dampak negatif jika nilai dalam ' + d.topik + ' diabaikan:</strong></p>' +
-        '<div style="border:1px dashed #64748b; min-height:80px; padding:10px; background:#fff; margin-bottom:14px; border-radius:4px;"></div>' +
-        '<p><strong>3. Tuliskan 2 usulan tindakan nyata yang dapat diterapkan langsung oleh generasi muda:</strong></p>' +
-        '<div style="border:1px dashed #64748b; min-height:80px; padding:10px; background:#fff; border-radius:4px;"></div>' +
-        '<div class="section-head">D. RUBRIK PENILAIAN</div>' +
-        '<table class="doc-table"><thead><tr><th>Kriteria</th><th>Skor 4 (Sangat Baik)</th><th>Skor 3 (Baik)</th><th>Skor 2/1 (Cukup)</th></tr></thead><tbody><tr><td>Ketepatan Konsep</td><td>Semua jawaban tepat dan ilmiah.</td><td>Sebagian besar tepat.</td><td>Masih ada miskonsepsi.</td></tr><tr><td>Kerja Sama</td><td>Seluruh anggota kompak berkontribusi.</td><td>Mayoritas anggota aktif.</td><td>Hanya 1 siswa dominan.</td></tr></tbody></table>' +
-        ttdTabel(d);
-
-      // 4. CP
-      berkas['cp'] = '<div class="doc-title">ANALISIS CAPAIAN PEMBELAJARAN (CP)</div>' +
-        '<div class="doc-subtitle">TAHUN AJARAN ' + d.tahun + '</div>' +
-        kopTabel(d) +
-        '<table class="doc-table">' +
-          '<thead><tr><th width="20%">Elemen</th><th width="40%">Capaian Pembelajaran (CP)</th><th width="20%">Kompetensi (KKO)</th><th width="20%">Lingkup Materi</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td><strong>Pemahaman ' + d.mapel + '</strong></td><td>Memahami substansi <strong>' + d.topik + '</strong> serta menganalisis relevansinya dalam kehidupan bermasyarakat.</td><td>Menjelaskan (C2), Menganalisis (C4)</td><td>' + d.topik + '</td></tr>' +
-            '<tr><td><strong>Keterampilan Proses</strong></td><td>Menyelidiki fenomena kontekstual, merumuskan hipotesis, dan mempresentasikan solusi kritis.</td><td>Menyelidiki (P3), Menyajikan (P3)</td><td>Investigasi Kontekstual</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 5. TP
-      berkas['tp'] = '<div class="doc-title">RUMUSAN TUJUAN PEMBELAJARAN (TP)</div>' +
-        '<div class="doc-subtitle">KURIKULUM MERDEKA</div>' +
-        kopTabel(d) +
-        '<table class="doc-table">' +
-          '<thead><tr><th width="10%">Kode</th><th width="50%">Tujuan Pembelajaran (Format ABCD)</th><th width="25%">Dimensi PPP</th><th width="15%">Alokasi JP</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td align="center"><strong>TP.01</strong></td><td>Melalui telaah materi (C), peserta didik (A) mampu <strong>menjelaskan konsep pokok ' + d.topik + '</strong> (B) secara tepat (D).</td><td>Bernalar Kritis, Mandiri</td><td align="center">2 JP</td></tr>' +
-            '<tr><td align="center"><strong>TP.02</strong></td><td>Melalui diskusi kelompok (C), peserta didik (A) mampu <strong>menganalisis implementasi nilai ' + d.topik + '</strong> (B) secara mendalam (D).</td><td>Bergotong Royong, Kritis</td><td align="center">3 JP</td></tr>' +
-            '<tr><td align="center"><strong>TP.03</strong></td><td>Melalui proyek terpadu (C), peserta didik (A) mampu <strong>menyajikan karya solutif ' + d.topik + '</strong> (B) dengan komunikatif (D).</td><td>Kreatif, Gotong Royong</td><td align="center">2 JP</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 6. ATP
-      berkas['atp'] = '<div class="doc-title">ALUR TUJUAN PEMBELAJARAN (ATP)</div>' +
-        '<div class="doc-subtitle">MATA PELAJARAN ' + d.mapel.toUpperCase() + '</div>' +
-        kopTabel(d) +
-        '<table class="doc-table">' +
-          '<thead><tr><th>Alur</th><th>Capaian Alur Pembelajaran</th><th>Materi & Sub-Topik</th><th>Bentuk Asesmen</th><th>JP</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td align="center">1</td><td>Mengidentifikasi definisi dan gagasan pokok ' + d.topik + '.</td><td>Hakikat Dasar ' + d.topik + '</td><td>Formatif: Tes Lisan Apersepsi</td><td align="center">2 JP</td></tr>' +
-            '<tr><td align="center">2</td><td>Menganalisis hubungan nilai dan studi kasus kontekstual.</td><td>Telaah Kasus & Dinamika</td><td>Formatif: Unjuk Kerja LKPD</td><td align="center">3 JP</td></tr>' +
-            '<tr><td align="center">3</td><td>Menyajikan rekomendasi solusi dan aksi nyata dalam karya.</td><td>Proyek Aksi & Refleksi</td><td>Sumatif: Presentasi Karya</td><td align="center">2 JP</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 7. Prota
-      berkas['prota'] = '<div class="doc-title">PROGRAM TAHUNAN (PROTA)</div>' +
-        '<div class="doc-subtitle">TAHUN PELAJARAN ' + d.tahun + '</div>' +
-        kopTabel(d) +
-        '<table class="doc-table">' +
-          '<thead><tr><th>Smt</th><th>No. TP</th><th>Materi Pokok / Lingkup Pembelajaran</th><th>Alokasi JP</th><th>Keterangan</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td rowspan="4" align="center"><strong>I (Ganjil)</strong></td><td align="center">TP 1.1</td><td>Konsep Fundamental & Gagasan Pokok ' + d.topik + '</td><td align="center">12 JP</td><td>Reguler</td></tr>' +
-            '<tr><td align="center">TP 1.2</td><td>Analisis Kasus Kontekstual dan Dinamika Penerapan Nilai</td><td align="center">15 JP</td><td>Reguler</td></tr>' +
-            '<tr><td align="center">TP 1.3</td><td>Proyek Kolaboratif Penerapan Nilai di Sekolah</td><td align="center">9 JP</td><td>Proyek Terpadu</td></tr>' +
-            '<tr style="background:#f8fafc; font-weight:bold;"><td colspan="2" align="center">TOTAL SEMESTER GANJIL</td><td align="center">36 JP</td><td>-</td></tr>' +
-            '<tr><td rowspan="4" align="center"><strong>II (Genap)</strong></td><td align="center">TP 2.1</td><td>Penguatan Nilai Keberagaman dan Keadilan Sosial</td><td align="center">12 JP</td><td>Reguler</td></tr>' +
-            '<tr><td align="center">TP 2.2</td><td>Tanggung Jawab Kewarganegaraan di Ranah Global</td><td align="center">15 JP</td><td>Reguler</td></tr>' +
-            '<tr><td align="center">TP 2.3</td><td>Evaluasi Portofolio Akhir Tahun Ajaran</td><td align="center">9 JP</td><td>Sumatif</td></tr>' +
-            '<tr style="background:#f8fafc; font-weight:bold;"><td colspan="2" align="center">TOTAL SEMESTER GENAP</td><td align="center">36 JP</td><td>-</td></tr>' +
-            '<tr style="background:#e2e8f0; font-weight:bold;"><td colspan="3" align="center">TOTAL SATU TAHUN AJARAN</td><td align="center">72 JP</td><td>Tuntas</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 8. Promes
-      berkas['promes'] = '<div class="doc-title">PROGRAM SEMESTER (PROMES)</div>' +
-        '<div class="doc-subtitle">SEMESTER ' + d.semester.toUpperCase() + ' - ' + d.tahun + '</div>' +
-        kopTabel(d) +
-        '<table class="doc-table">' +
-          '<thead><tr><th rowspan="2">No</th><th rowspan="2">Materi Pokok / Indikator</th><th rowspan="2">JP</th><th colspan="4">Bulan 1</th><th colspan="4">Bulan 2</th><th colspan="4">Bulan 3</th><th colspan="4">Bulan 4</th><th colspan="4">Bulan 5</th><th colspan="4">Bulan 6</th></tr><tr style="font-size:0.75rem;"><th>1</th><th>2</th><th>3</th><th>4</th><th>1</th><th>2</th><th>3</th><th>4</th><th>1</th><th>2</th><th>3</th><th>4</th><th>1</th><th>2</th><th>3</th><th>4</th><th>1</th><th>2</th><th>3</th><th>4</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead>' +
-          '<tbody>' +
-            '<tr><td align="center">1</td><td>Pengantar & Konsep Awal ' + d.topik + '</td><td align="center">6</td><td align="center">3</td><td align="center">3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
-            '<tr><td align="center">2</td><td>Eksplorasi Nilai & Telaah Peristiwa Nyata</td><td align="center">9</td><td></td><td></td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
-            '<tr><td align="center">3</td><td>Penyelidikan Terbimbing & Pengisian LKPD</td><td align="center">9</td><td></td><td></td><td></td><td></td><td></td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
-            '<tr><td align="center">4</td><td>Proyek Kolaboratif & Presentasi Kelompok</td><td align="center">6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="center">3</td><td align="center">3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
-            '<tr><td align="center">5</td><td>Asesmen Sumatif Lingkup Materi & Remedial</td><td align="center">6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="center">3</td><td align="center">3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
-            '<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2" align="center">TOTAL JAM PEMBELAJARAN (JP)</td><td align="center">36</td><td colspan="24" align="center">Terdistribusi Lengkap Selama Satu Semester</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-        ttdTabel(d);
-
-      // 9. Paket Lengkap Semua
-      berkas['semua'] = berkas['modul'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['bahan'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['lkpd'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['cp'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['tp'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['atp'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['prota'] + '<div style="page-break-after:always; margin:40px 0; border-bottom:2px dashed #94a3b8;"></div>' +
-        berkas['promes'];
-
-      // Tampilkan ke layar
-      pindahTab(tabAktif);
+      daftarDokumen['semua'] = `
+        ${daftarDokumen['cp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['tp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['atp']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['prota']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['promes']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['modul']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['bahan']}
+        <div class="page-break" style="margin: 40px 0; border-bottom: 2px dashed #94a3b8;"></div>
+        ${daftarDokumen['lkpd']}
+      `;
     }
 
-    // Pindah Tab Dokumen
+    // Helper: Header Metadata Table
+    function buatKopMeta(d) {
+      return `
+        <table class="meta-table">
+          <tr><td width="20%"><strong>Satuan Pendidikan</strong></td><td width="35%">: ${d.sekolah}</td><td width="18%"><strong>Fase / Kelas</strong></td><td width="27%">: ${d.fase}</td></tr>
+          <tr><td><strong>Mata Pelajaran</strong></td><td>: ${d.mapel}</td><td><strong>Semester / Tahun</strong></td><td>: ${d.semester} / ${d.tahun}</td></tr>
+          <tr><td><strong>Materi Pokok</strong></td><td>: <strong>${d.topik}</strong></td><td><strong>Alokasi Waktu</strong></td><td>: ${d.waktu}</td></tr>
+        </table>
+      `;
+    }
+
+    // Helper: Official Signature Block
+    function buatTandaTangan(d) {
+      const now = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const tanggalStr = now.toLocaleDateString('id-ID', options);
+
+      return `
+        <table class="ttd-table">
+          <tr>
+            <td>
+              Mengetahui,<br>
+              Kepala ${d.sekolah}
+              <div style="height: 65px;"></div>
+              <strong><u>${d.kepsek}</u></strong><br>
+              NIP. ${d.nipKepsek}
+            </td>
+            <td>
+              Disusun di Tempat, ${tanggalStr}<br>
+              Guru Mata Pelajaran
+              <div style="height: 65px;"></div>
+              <strong><u>${d.guru}</u></strong><br>
+              NIP. ${d.nipGuru}
+            </td>
+          </tr>
+        </table>
+      `;
+    }
+
+    // Switch Document Tab
     function pindahTab(nama) {
-      tabAktif = nama;
-      var buttons = document.querySelectorAll('#tabGroup .tab-btn');
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove('active');
-        if (buttons[i].getAttribute('onclick') && buttons[i].getAttribute('onclick').indexOf("'" + nama + "'") !== -1) {
-          buttons[i].classList.add('active');
+      tabTerpilih = nama;
+      const buttons = document.querySelectorAll('#tabPills .btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick')?.includes(`'${nama}'`)) {
+          btn.classList.add('active');
         }
-      }
+      });
 
-      var target = document.getElementById('paperTarget');
-      target.innerHTML = berkas[nama] || '<div style="padding:40px; text-align:center; color:#64748b;">Klik tombol <strong>"Susun Seluruh Perangkat"</strong> untuk memuat dokumen.</div>';
+      const paper = document.getElementById('paperTarget');
+      paper.innerHTML = daftarDokumen[nama] || '<div class="text-center py-5 text-muted">Dokumen sedang disiapkan...</div>';
     }
 
-    // Ubah Mode Edit Langsung (WYSIWYG)
-    function ubahModeEdit() {
-      var paper = document.getElementById('paperTarget');
-      var btn = document.getElementById('btnEdit');
-      sedangEdit = !sedangEdit;
-      paper.contentEditable = sedangEdit;
-      
-      if (sedangEdit) {
-        paper.classList.add('editing');
-        btn.innerHTML = '✔️ Selesai Edit';
-        btn.classList.replace('btn-outline', 'btn-dark');
+    // Toggle Content Editable Mode (Live WYSIWYG)
+    function toggleEditTeks() {
+      const paper = document.getElementById('paperTarget');
+      const btn = document.getElementById('btnToggleEdit');
+      const label = document.getElementById('editBtnText');
+      const banner = document.getElementById('editAlertBanner');
+
+      statusEdit = !statusEdit;
+      paper.contentEditable = statusEdit;
+
+      if (statusEdit) {
+        paper.classList.add('is-editing');
+        label.innerText = 'Selesai Edit';
+        btn.classList.replace('btn-outline-warning', 'btn-warning');
+        banner.classList.remove('d-none');
       } else {
-        paper.classList.remove('editing');
-        btn.innerHTML = '✏️ Edit Teks';
-        btn.classList.replace('btn-dark', 'btn-outline');
-        if (tabAktif !== 'semua') {
-          berkas[tabAktif] = paper.innerHTML;
+        paper.classList.remove('is-editing');
+        label.innerText = 'Edit Teks';
+        btn.classList.replace('btn-warning', 'btn-outline-warning');
+        banner.classList.add('d-none');
+
+        // Persist edits to active tab
+        if (tabTerpilih !== 'semua') {
+          daftarDokumen[tabTerpilih] = paper.innerHTML;
         }
       }
     }
 
-    // Unduh File Microsoft Word (.doc)
-    function unduhWord() {
-      var konten = document.getElementById('paperTarget').innerHTML;
-      var mapel = (document.getElementById('mapel').value || 'Dokumen').replace(/[^a-zA-Z0-9]/g, '_');
-      var namaFile = 'Perangkat_' + tabAktif.toUpperCase() + '_' + mapel + '.doc';
+    // Copy Content Text to Clipboard
+    function salinKonten() {
+      const paper = document.getElementById('paperTarget');
+      navigator.clipboard.writeText(paper.innerText).then(() => {
+        alert('Teks dokumen berhasil disalin ke papan klip!');
+      });
+    }
 
-      var templateWord = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
-        '<head><meta charset="utf-8"><title>' + namaFile + '</title>' +
-        '<style>' +
-          'body { font-family: "Times New Roman", serif; font-size: 11pt; line-height: 1.35; }' +
-          'table { width: 100%; border-collapse: collapse; margin-bottom: 12pt; }' +
-          'th, td { border: 1pt solid #000; padding: 5pt 7pt; font-size: 10.5pt; vertical-align: top; }' +
-          '.meta-table td, .ttd-box td { border: none !important; }' +
-          '.doc-title { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 4pt; }' +
-          '.doc-subtitle { text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 16pt; }' +
-          '.section-head { font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt; }' +
-        '</style></head><body>' + konten + '</body></html>';
+    // Export Current View to Microsoft Word (.doc)
+    function eksporKeWord() {
+      const konten = document.getElementById('paperTarget').innerHTML;
+      const mapel = (document.getElementById('mapel').value || 'Dokumen').replace(/[^a-zA-Z0-9]/g, '_');
+      const namaFile = `Perangkat_${tabTerpilih.toUpperCase()}_${mapel}.doc`;
 
-      var blob = new Blob(['\ufeff' + templateWord], { type: 'application/msword' });
-      var link = document.createElement('a');
+      const templateWord = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8">
+          <title>${namaFile}</title>
+          <style>
+            @page { size: 21.0cm 29.7cm; margin: 2cm; }
+            body { font-family: "Times New Roman", serif; font-size: 11pt; line-height: 1.35; color: #000; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 12pt; }
+            th, td { border: 1pt solid #000; padding: 5pt 7pt; font-size: 10.5pt; vertical-align: top; }
+            th { background-color: #f2f2f2; }
+            .meta-table td, .ttd-table td { border: none !important; }
+            .doc-title { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 4pt; }
+            .doc-subtitle { text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 16pt; }
+            .section-header { font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt; }
+            .page-break { page-break-before: always; }
+          </style>
+        </head>
+        <body>${konten}</body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + templateWord], { type: 'application/msword' });
+      const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = namaFile;
       document.body.appendChild(link);
@@ -519,16 +1416,23 @@
       document.body.removeChild(link);
     }
 
-    // Isi Sampel
-    function isiContoh() {
-      document.getElementById('materiKustom').value = 'Materi Pokok Sejarah Lahirnya Pancasila:\n1. Sidang Pertama BPUPKI (29 Mei - 1 Juni 1945): Gagasan dasar negara oleh Mohammad Yamin, Soepomo, dan pidato Ir. Soekarno.\n2. Piagam Jakarta (22 Juni 1945): Rancangan mukadimah oleh Panitia Sembilan.\n3. Sidang PPKI (18 Agustus 1945): Penetapan Pancasila sebagai dasar negara dan UUD 1945.\n4. Nilai Luhur: Musyawarah mufakat, toleransi perbedaan pendapat, gotong royong, dan persatuan kebangsaan.';
-      buatSemuaDokumen();
-    }
+    // Populate Sample Data Quick Fill
+    function isiContohData() {
+      document.getElementById('sekolah').value = 'SMP Negeri 1 Merdeka Belajar';
+      document.getElementById('guru').value = 'Naning Maryana, M.Pd.';
+      document.getElementById('nipGuru').value = '197503141999032001';
+      document.getElementById('kepsek').value = 'Dra. Hj. Siti Aminah, M.Pd.';
+      document.getElementById('nipKepsek').value = '197001011995012001';
+      document.getElementById('mapel').value = 'Pendidikan Pancasila (PP)';
+      document.getElementById('topik').value = 'Sejarah Kelahiran Pancasila dan Nilai Keseharian';
+      document.getElementById('materiKustom').value = `Nilai-Nilai Luhur Sejarah Pancasila:
+1. Sidang Pertama BPUPKI (29 Mei - 1 Juni 1945): Gagasan Mohammad Yamin, Mr. Soepomo, dan Pidato Bung Karno.
+2. Panitia Sembilan & Piagam Jakarta (22 Juni 1945): Konsensus rancangan pembukaan dasar negara.
+3. Penetapan PPKI (18 Agustus 1945): Pengesahan UUD 1945 dan penetapan Pancasila sah sebagai dasar negara.
+4. Nilai Luhur Praktis: Musyawarah mufakat, persatuan di atas kepentingan golongan, toleransi perbedaan, gotong royong warga sekolah.`;
 
-    // Jalankan otomatis saat halaman selesai dimuat
-    window.onload = function() {
-      buatSemuaDokumen();
-    };
+      prosesPenyusunan();
+    }
   </script>
 </body>
 </html>
