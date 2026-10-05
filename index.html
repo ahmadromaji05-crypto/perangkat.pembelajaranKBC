@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Penyusun Perangkat Pembelajaran Terpadu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #0d9488;
+      --accent-color: #f59e0b;
+      --bg-light: #f8fafc;
+      --card-border: #e2e8f0;
+    }
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1e293b;
+    }
+    .main-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: white;
+      padding: 2.2rem 1rem;
+      border-bottom: 4px solid var(--secondary-color);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      margin-bottom: 1.5rem;
+    }
+    .card-header-custom {
+      background-color: #fff;
+      border-bottom: 2px solid #f1f5f9;
+      font-weight: 700;
+      color: var(--primary-color);
+      padding: 1rem 1.25rem;
+      border-radius: 12px 12px 0 0 !important;
+    }
+    .nav-pills .nav-link {
+      color: #475569;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+      border: 1px solid #e2e8f0;
+      background: white;
+      transition: all 0.2s;
+    }
+    .nav-pills .nav-link.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+    }
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--primary-color), #2563eb);
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-primary-custom:hover {
+      background: linear-gradient(135deg, #172554, #1d4ed8);
+      color: white;
+    }
+    .document-preview {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 3rem 3.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      min-height: 850px;
+      position: relative;
+    }
+    .document-preview.is-editable {
+      outline: 2px dashed var(--secondary-color);
+      background-color: #fffffb;
+    }
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+    }
+    .doc-table th, .doc-table td {
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      font-size: 0.95rem;
+    }
+    .doc-table th {
+      background-color: #f1f5f9;
+      text-align: center;
+      font-weight: bold;
+    }
+    .doc-title {
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+    .doc-subtitle {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1.8rem;
+    }
+    .meta-table {
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .meta-table td {
+      padding: 4px 6px;
+      vertical-align: top;
+      font-size: 0.95rem;
+    }
+    .edit-badge {
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      float: right;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Banner -->
+  <header class="main-header no-print">
+    <div class="container-fluid px-lg-5">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+          <h2 class="fw-bold mb-1"><i class="fa-solid fa-graduation-cap me-2 text-warning"></i>Sistem Otomasi Perangkat Pembelajaran</h2>
+          <p class="mb-0 text-white-50">Generator Lengkap CP, TP, ATP, Prota, Promes, Modul Ajar, Bahan Ajar Terpadu & LKPD Interaktif</p>
+        </div>
+        <div class="d-flex gap-2">
+          <span class="badge bg-light text-dark px-3 py-2 d-flex align-items-center gap-2"><i class="fa-solid fa-check-double text-success"></i> Standar Kemendikbudristek</span>
+          <span class="badge bg-secondary px-3 py-2 d-flex align-items-center gap-2"><i class="fa-solid fa-bolt text-warning"></i> Model Gemini 3.8 Flash</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid px-lg-5 my-4">
+    <div class="row g-4">
+      
+      <!-- Panel Input Guru -->
+      <div class="col-xl-4 col-lg-5 no-print">
+        
+        <!-- Pemilih Mode Kerja -->
+        <div class="card mb-3">
+          <div class="card-body p-2">
+            <ul class="nav nav-pills nav-fill" id="modeTab" role="tablist">
+              <li class="nav-item">
+                <button class="nav-link active py-2" id="mode-standar-tab" data-bs-toggle="pill" data-bs-target="#mode-standar" type="button" onclick="setAppMode('standar')">
+                  <i class="fa-solid fa-bolt text-warning me-1"></i> Mode Cepat
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link py-2" id="mode-gemini-tab" data-bs-toggle="pill" data-bs-target="#mode-gemini" type="button" onclick="setAppMode('gemini')">
+                  <i class="fa-solid fa-wand-magic-sparkles text-primary me-1"></i> Mode AI Gemini
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Form Konfigurasi Gemini (Terbuka di Mode Gemini) -->
+        <div class="card mb-3 d-none border-primary" id="geminiConfigCard">
+          <div class="card-header-custom bg-primary-subtle py-2 d-flex justify-content-between align-items-center">
+            <span class="text-primary"><i class="fa-solid fa-key me-2"></i>Konfigurasi Gemini API</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="small text-decoration-none text-primary"><i class="fa-solid fa-external-link me-1"></i>Dapatkan Kunci</a>
+          </div>
+          <div class="card-body p-3">
+            <div class="mb-2">
+              <label class="form-label small fw-bold mb-1">Google Gemini API Key</label>
+              <div class="input-group input-group-sm">
+                <input type="password" class="form-control" id="geminiApiKey" placeholder="Tempel API Key Google AI Studio...">
+                <button class="btn btn-outline-secondary" type="button" id="toggleApiKey"><i class="fa-solid fa-eye"></i></button>
+                <button class="btn btn-primary" type="button" id="btnTestApi" onclick="testConnection()"><i class="fa-solid fa-plug me-1"></i>Tes</button>
+              </div>
+              <div id="apiStatusMessage" class="small mt-1"></div>
+            </div>
+            <div class="row g-2">
+              <div class="col-7">
+                <label class="form-label small fw-bold mb-1">Model AI</label>
+                <select id="geminiModel" class="form-select form-select-sm">
+                  <option value="gemini-3.8-flash" selected>gemini-3.8-flash (Rekomendasi Cepat)</option>
+                  <option value="gemini-3.8-pro">gemini-3.8-pro (Analisis Mendalam)</option>
+                </select>
+              </div>
+              <div class="col-5">
+                <label class="form-label small fw-bold mb-1">Kreativitas</label>
+                <select id="geminiTemp" class="form-select form-select-sm">
+                  <option value="0.3">Terstruktur</option>
+                  <option value="0.7" selected>Kreatif Seimbang</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulir Data Perangkat Pembelajaran -->
+        <div class="card">
+          <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-sliders me-2 text-primary"></i>Parameter Kurikulum</span>
+            <button class="btn btn-sm btn-link text-decoration-none p-0 text-muted" onclick="isiContohData()"><i class="fa-solid fa-pencil me-1"></i>Isi Sampel</button>
+          </div>
+          <div class="card-body">
+            <form id="docForm">
+              
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Nama Sekolah / Madrasah</label>
+                <input type="text" class="form-control form-control-sm" id="namaSekolah" value="SMP Negeri 1 Merdeka Belajar" required>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-md-7">
+                  <label class="form-label small fw-bold">Nama Guru Pengampu</label>
+                  <input type="text" class="form-control form-control-sm" id="namaGuru" value="Budi Santoso, S.Pd." required>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">NIP Guru</label>
+                  <input type="text" class="form-control form-control-sm" id="nipGuru" value="198705122011011003">
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-md-7">
+                  <label class="form-label small fw-bold">Kepala Sekolah / Madrasah</label>
+                  <input type="text" class="form-control form-control-sm" id="namaKepsek" value="Dra. Hj. Siti Aminah, M.Pd." required>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">NIP Kepala Sekolah</label>
+                  <input type="text" class="form-control form-control-sm" id="nipKepsek" value="197503141999032001">
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Mata Pelajaran</label>
+                  <input type="text" class="form-control form-control-sm" id="mataPelajaran" value="Ilmu Pengetahuan Alam (IPA)" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Fase & Kelas</label>
+                  <select class="form-select form-select-sm" id="faseKelas">
+                    <option value="Fase A (Kelas 1-2 SD/MI)">Fase A (Kelas 1-2 SD/MI)</option>
+                    <option value="Fase B (Kelas 3-4 SD/MI)">Fase B (Kelas 3-4 SD/MI)</option>
+                    <option value="Fase C (Kelas 5-6 SD/MI)">Fase C (Kelas 5-6 SD/MI)</option>
+                    <option value="Fase D (Kelas 7-9 SMP/MTs)" selected>Fase D (Kelas 7-9 SMP/MTs)</option>
+                    <option value="Fase E (Kelas 10 SMA/MA/SMK)">Fase E (Kelas 10 SMA/MA/SMK)</option>
+                    <option value="Fase F (Kelas 11-12 SMA/MA/SMK)">Fase F (Kelas 11-12 SMA/MA/SMK)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Semester</label>
+                  <select class="form-select form-select-sm" id="semester">
+                    <option value="Ganjil (1)" selected>Ganjil (1)</option>
+                    <option value="Genap (2)">Genap (2)</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Tahun Ajaran</label>
+                  <input type="text" class="form-control form-control-sm" id="tahunAjaran" value="2026/2027">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Alokasi Waktu</label>
+                  <input type="text" class="form-control form-control-sm" id="alokasiWaktu" value="3 JP x 40 Menit">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Materi Pokok / Judul Topik</label>
+                <input type="text" class="form-control form-control-sm" id="topikMateri" value="Ekosistem, Interaksi Makhluk Hidup, dan Rantai Makanan" required>
+              </div>
+
+              <!-- FITUR BARU: Input Materi Kustom Sendiri -->
+              <div class="mb-3 p-2 border rounded bg-light">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <label class="form-label small fw-bold text-success mb-0">
+                    <i class="fa-solid fa-file-pen me-1"></i>Input Teks Materi Sendiri (Opsional)
+                  </label>
+                  <span class="badge bg-success-subtle text-success">Prioritas Bahan & LKPD</span>
+                </div>
+                <textarea class="form-control form-control-sm" id="materiKustom" rows="4" placeholder="Tempel ringkasan bacaan buku, poin materi penting, atau kasus spesifik di sini. AI atau generator akan menyusun Bahan Ajar & LKPD langsung dari teks ini..."></textarea>
+                <div class="text-muted" style="font-size: 0.75rem; margin-top: 3px;">
+                  *Kosongkan jika ingin sistem menyusun materi pokok secara otomatis.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Model Pembelajaran</label>
+                <select class="form-select form-select-sm" id="modelPembelajaran">
+                  <option value="Problem Based Learning (PBL)" selected>Problem Based Learning (PBL)</option>
+                  <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+                  <option value="Discovery / Inquiry Learning">Discovery / Inquiry Learning</option>
+                  <option value="Diferensiasi Konten & Proses">Pembelajaran Terdiferensiasi</option>
+                </select>
+              </div>
+
+              <!-- Pilihan Berkas yang Dibuat -->
+              <div class="mb-3">
+                <label class="form-label small fw-bold d-block mb-1">Dokumen yang Disusun:</label>
+                <div class="row g-1">
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkCP" checked><label class="form-check-label small" for="chkCP">Analisis CP</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkTP" checked><label class="form-check-label small" for="chkTP">Tujuan (TP)</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkATP" checked><label class="form-check-label small" for="chkATP">Alur (ATP)</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkProta" checked><label class="form-check-label small" for="chkProta">Prota</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkPromes" checked><label class="form-check-label small" for="chkPromes">Promes</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkModul" checked><label class="form-check-label small" for="chkModul">Modul Ajar</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkBahan" checked><label class="form-check-label small" for="chkBahan">Bahan Ajar Lengkap</label></div></div>
+                  <div class="col-6"><div class="form-check"><input class="form-check-input check-doc" type="checkbox" id="chkLKPD" checked><label class="form-check-label small" for="chkLKPD">LKPD Siswa</label></div></div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary-custom py-2 shadow-sm" id="btnProses" onclick="jalankanGenerator()">
+                  <i class="fa-solid fa-gears me-2"></i>Susun Seluruh Perangkat
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel Output Dokumen & Tab Navigasi -->
+      <div class="col-xl-8 col-lg-7">
+        
+        <!-- Tab Navigasi Perangkat -->
+        <div class="card mb-3 no-print">
+          <div class="card-body p-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <ul class="nav nav-pills flex-grow-1" id="docTabs" role="tablist">
+              <li class="nav-item"><button class="nav-link active" onclick="bukaTab('modul')"><i class="fa-solid fa-book-open me-1"></i>Modul Ajar</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('bahan')"><i class="fa-solid fa-layer-group me-1"></i>Bahan Ajar</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('lkpd')"><i class="fa-solid fa-clipboard-question me-1"></i>LKPD</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('cp')">CP</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('tp')">TP</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('atp')">ATP</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('prota')">Prota</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('promes')">Promes</button></li>
+              <li class="nav-item"><button class="nav-link" onclick="bukaTab('semua')"><i class="fa-solid fa-box-archive me-1"></i>Paket Lengkap</button></li>
+            </ul>
+
+            <!-- Tombol Aksi Dokumen -->
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-warning btn-sm" id="btnToggleEdit" onclick="toggleEditMode()">
+                <i class="fa-solid fa-pen-to-square me-1"></i><span id="editLabel">Edit Teks</span>
+              </button>
+              <button class="btn btn-outline-primary btn-sm" onclick="salinKonten()">
+                <i class="fa-solid fa-copy me-1"></i>Salin
+              </button>
+              <button class="btn btn-success btn-sm" onclick="eksporWord()">
+                <i class="fa-solid fa-file-word me-1"></i>Unduh .doc
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="window.print()">
+                <i class="fa-solid fa-print me-1"></i>Cetak/PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner Notifikasi Saat Sedang Mode Edit -->
+        <div id="editAlert" class="alert alert-warning py-2 px-3 small d-none no-print d-flex justify-content-between align-items-center">
+          <div><i class="fa-solid fa-circle-info me-2"></i><strong>Mode Edit Aktif:</strong> Anda dapat langsung mengklik dan mengubah teks, menambah soal, atau mengedit tabel di bawah. Klik tombol <strong>Selesai Edit</strong> jika sudah selesai.</div>
+          <button class="btn btn-sm btn-dark py-0" onclick="toggleEditMode()">Selesai Edit</button>
+        </div>
+
+        <!-- Area Render Lembar Dokumen Siap Cetak -->
+        <div class="document-preview" id="printArea" contenteditable="false">
+          <div id="renderTarget">
+            <!-- Dokumen dimuat di sini -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // State Aplikasi
+    let currentAppMode = 'standar';
+    let activeTabName = 'modul';
+    let isEditing = false;
+    let generatedDocuments = {};
+
+    // Inisialisasi Kunci API Lokal
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedKey = localStorage.getItem('gemini_api_key_v2') || '';
+      if (savedKey) document.getElementById('geminiApiKey').value = savedKey;
+      
+      document.getElementById('toggleApiKey').addEventListener('click', () => {
+        const inp = document.getElementById('geminiApiKey');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+      });
+
+      jalankanGenerator(); // Buat draf awal instan
+    });
+
+    function setAppMode(mode) {
+      currentAppMode = mode;
+      const configCard = document.getElementById('geminiConfigCard');
+      if (mode === 'gemini') {
+        configCard.classList.remove('d-none');
+      } else {
+        configCard.classList.add('d-none');
+      }
+    }
+
+    // Toggle Fitur Edit Langsung (WYSIWYG)
+    function toggleEditMode() {
+      const area = document.getElementById('printArea');
+      const label = document.getElementById('editLabel');
+      const alert = document.getElementById('editAlert');
+      const btn = document.getElementById('btnToggleEdit');
+
+      isEditing = !isEditing;
+      area.contentEditable = isEditing;
+
+      if (isEditing) {
+        area.classList.add('is-editable');
+        label.innerText = 'Selesai Edit';
+        btn.classList.replace('btn-outline-warning', 'btn-warning');
+        alert.classList.remove('d-none');
+      } else {
+        area.classList.remove('is-editable');
+        label.innerText = 'Edit Teks';
+        btn.classList.replace('btn-warning', 'btn-outline-warning');
+        alert.classList.add('d-none');
+        // Simpan editan ke memori tab saat ini
+        if (activeTabName !== 'semua') {
+          generatedDocuments[activeTabName] = document.getElementById('renderTarget').innerHTML;
+        }
+      }
+    }
+
+    // Uji Koneksi API Gemini
+    async function testConnection() {
+      const key = document.getElementById('geminiApiKey').value.trim();
+      const statusDiv = document.getElementById('apiStatusMessage');
+      const model = document.getElementById('geminiModel').value;
+
+      if (!key) {
+        statusDiv.innerHTML = '<span class="text-danger"><i class="fa-solid fa-triangle-exclamation me-1"></i>Masukkan API Key terlebih dahulu.</span>';
+        return;
+      }
+
+      statusDiv.innerHTML = '<span class="text-muted"><i class="fa-solid fa-spinner fa-spin me-1"></i>Menghubungkan ke Gemini...</span>';
+      
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "Tes koneksi. Jawab hanya satu kata: Aktif." }] }]
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('gemini_api_key_v2', key);
+          statusDiv.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-check-circle me-1"></i>Tersambung sukses dengan model ${model}!</span>`;
+        } else {
+          statusDiv.innerHTML = `<span class="text-danger small"><i class="fa-solid fa-circle-xmark me-1"></i>Gagal: ${data.error?.message || 'Periksa API Key Anda'}</span>`;
+        }
+      } catch (err) {
+        statusDiv.innerHTML = `<span class="text-danger small"><i class="fa-solid fa-circle-xmark me-1"></i>Gagal tersambung: ${err.message}</span>`;
+      }
+    }
+
+    // Generator Utama
+    async function jalankanGenerator() {
+      const btn = document.getElementById('btnProses');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Sedang Menyusun Perangkat...';
+
+      const data = ambilDataForm();
+
+      try {
+        if (currentAppMode === 'gemini' && document.getElementById('geminiApiKey').value.trim() !== '') {
+          await generateViaGemini(data);
+        } else {
+          generateStandarLengkap(data);
+        }
+        bukaTab(activeTabName);
+      } catch (e) {
+        alert('Terjadi kendala saat memproses: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function ambilDataForm() {
+      return {
+        sekolah: document.getElementById('namaSekolah').value,
+        guru: document.getElementById('namaGuru').value,
+        nipGuru: document.getElementById('nipGuru').value,
+        kepsek: document.getElementById('namaKepsek').value,
+        nipKepsek: document.getElementById('nipKepsek').value,
+        mapel: document.getElementById('mataPelajaran').value,
+        fase: document.getElementById('faseKelas').value,
+        semester: document.getElementById('semester').value,
+        tahun: document.getElementById('tahunAjaran').value,
+        waktu: document.getElementById('alokasiWaktu').value,
+        topik: document.getElementById('topikMateri').value,
+        materiKustom: document.getElementById('materiKustom').value.trim(),
+        model: document.getElementById('modelPembelajaran').value
+      };
+    }
